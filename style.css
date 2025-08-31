@@ -1,0 +1,338 @@
+/* style.css (with rules panel, back-to-top, permalinks) */
+
+:root{
+  --muted: #86d8d4;
+  --bg: #f1fdfb;
+  --text: #020a09;
+  --primary: #3bddca;
+  --secondary: #7fc7e9;
+  --accent: #6398e4;
+}
+
+/* Reset / base */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.35;
+}
+
+/* Header */
+header{
+  background: radial-gradient(circle at center, var(--primary), var(--secondary));
+  color: var(--text);
+  padding:25px;
+}
+.header-inner{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  max-width:1200px;
+  margin:0 auto;
+}
+.header-left h1{margin:0;font-size:1.1rem}
+.header-left .sub{margin:4px 0 0;font-size:0.85rem;opacity:0.95}
+.btn{border:0;background:transparent;color:var(--text);cursor:pointer;font-weight:600;padding:6px 8px;border-radius:6px}
+.btn.small{
+    font-size:0.86rem;
+    padding:4px 6px;
+    color:var(--text);
+}
+
+/* Rules panel (dropdown under header) */
+.rules-panel{
+  max-width:1200px;
+  margin:8px auto 0;
+  padding:12px;
+  background: var(--bg);
+  border-radius:10px;
+  color:var(--text);
+  box-shadow:0 10px 30px rgba(12,16,34,0.12);
+  position:relative;
+  z-index:20;
+}
+.rules-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--text);
+  margin-bottom:8px;
+}
+.rules-list{margin:6px 0 8px 20px}
+.rules-note{font-size:0.9rem;color:var(--text)}
+
+/* Main container */
+.container{
+  width:90vw;
+  max-width:1920px;
+  min-width:680px;
+  margin:14px auto;
+  padding:0 16px 60px;
+}
+
+/* Run details banner */
+.run-details{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  background: radial-gradient(circle at center, var(--primary), var(--secondary));
+  border-radius:12px;
+  padding:12px;
+  align-items:center;
+  box-shadow:0 6px 18px var(--secondary);
+  margin-bottom:14px;
+  position:relative;
+  z-index:3; /* ensure above timeline line */
+}
+.run-left, .run-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.person-sprite{
+  width: 176px;;
+  height: 176px;
+  object-fit:cover;
+  padding:4px;
+}
+.person-name{
+  font-weight:700;
+  font-size:3rem
+}
+.person-sub{
+  font-size:1.5rem;
+  color:var(--text);
+  text-align:left;
+}
+.rival-sub{
+  font-size:1.5rem;
+  color:var(--text);
+  text-align:right;
+}
+
+/* Controls */
+.controls{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:14px 0 22px;
+}
+.controls label{font-size:0.9rem;color:var(--text)}
+.controls select, .controls input{
+  margin-left:8px;
+  padding:6px 8px;
+  border-radius:8px;
+  color: var(--text);
+  border:1px solid #d6d6df;
+  background:var(--primary);
+  font-size:0.95rem;
+}
+#jump-episode{
+  margin-left:8px;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid #2f364f;
+  background:var(--accent);
+  color:var(--text);
+  cursor:pointer;
+}
+
+/* Timeline base & line (behind everything) */
+.timeline{
+  position:relative;
+  padding:30px 0;
+  margin:0 auto;
+  width:100%;
+  min-height:200px;
+}
+.timeline::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:0;
+  bottom:0;
+  width:4px;
+  background:var(--secondary);
+  border-radius:4px;
+  box-shadow:0 0 0 2px var(--secondary);
+  z-index:0; /* behind banners and events */
+}
+
+/* Episode banner */
+.episode-banner{
+  clear:both;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  text-align:center;
+  margin:22px 0;
+  padding:10px 14px;
+  background: radial-gradient(circle at center, var(--primary), var(--secondary));
+  color:var(--text);
+  border-radius:10px;
+  font-weight:600;
+  box-shadow:0 6px 18px var(--secondary);
+  position:relative;
+  z-index:2; /* above timeline line */
+}
+.episode-banner .permalink {
+  background:transparent;border:0;color:rgba(255,255,255,0.9);cursor:pointer;font-size:0.95rem;padding:6px;border-radius:6px;
+}
+
+/* Event card common */
+.event {
+  width: 46%;
+  padding: 12px 14px;
+  position: relative;
+  margin-bottom: 22px;
+  border-radius: 10px;
+  background: var(--muted);
+  box-shadow: 0 6px 18px rgba(16,18,36,0.06);
+  display: block;           /* important: NOT flex — header will be stacked above body */
+  box-sizing: border-box;
+  z-index: 4;               /* above timeline line */
+}
+
+/* left/right floats for side placement */
+.event.left {
+  float: left;
+  clear: both;
+  transform: translateX(20px);
+  margin-right: 4%;
+}
+.event.right {
+  float: right;
+  clear: both;
+  transform: translateX(-20px);
+  margin-left: 4%;
+}
+
+/* Episode banner should be above line */
+.episode-banner {
+  position: relative;
+  z-index: 5;
+}
+
+/* Header (top block) - visually distinct */
+.event-header {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: var(--secondary);       /* subtle highlight */
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.2;
+  /* ensure header sits visually above timeline */
+  position: relative;
+  z-index: 6;
+}
+
+/* Body (below header) contains the visual + text as a row */
+.event-body {
+  display: flex;
+  flex-direction: row;       /* sprite then text */
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 4;
+}
+
+/* Visual column (sprite / badge / evolution) */
+.event-body .visual {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Text column */
+.event-body .item-body {
+  flex: 1 1 auto;
+  min-width: 0;             /* needed to prevent overflow in flex children */
+}
+
+/* mobile layout - stack items */
+@media (max-width:900px){
+  .container{ width:94vw; min-width:0; }
+  .event{ width:100%; float:none; transform:none; margin-left:0; margin-right:0; padding:10px; }
+  .timeline::before{ left:20px; transform:none; width:3px; } /* vertical line moves to left */
+}
+
+/* sprite & content */
+.sprite{
+  width:96px;
+  height:96px;
+  object-fit:cover;
+  flex-shrink:0;
+  padding:6px;
+}
+.badge-icon{
+  width:72px;
+  height:72px;
+  object-fit:contain;
+  flex-shrink:0;
+  border-radius:8px;
+  padding:6px;
+}
+
+/* text content (new layout) */
+.item-body{ flex:1 }
+.primary-action{ margin:0 0 6px; font-weight:700; font-size:1rem; }
+.species-nick{ margin:0 0 6px; color:#222; font-size:0.98rem; }
+.obtained-line{ font-size:0.9rem; color:var(--text); margin-bottom:6px; }
+.item-notes{ font-size:0.9rem; color:#444 }
+
+/* evolution row */
+.evolution-row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.evolution-row .sprite{ width:72px; height:72px; }
+.evolve-arrow{ font-size:1.25rem; color:var(--text); margin:0 6px; }
+
+/* message panel */
+.message{ margin-top:18px; padding:12px 14px; background:#fff7e6; border:1px solid #ffe4b5; border-radius:8px; color:#7a5a00; position:relative; z-index:2; }
+
+/* Back to top */
+.back-to-top{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:46px;
+  height:46px;
+  border-radius:10px;
+  background:var(--accent);
+  color:var(--text);
+  border:0;
+  cursor:pointer;
+  font-size:20px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 30px rgba(16,18,36,0.16);
+  z-index:40;
+}
+
+/* footer */
+.footer{ 
+  clear: both;
+  width: 100%;
+  text-align:center; 
+  margin:36px 0 80px; 
+  color:var(--text); 
+  font-size:1rem; 
+  align-self: center;
+}

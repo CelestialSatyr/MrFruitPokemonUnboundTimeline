@@ -1,0 +1,69 @@
+[
+  {
+    "id": "e001",
+    "type": "caught",
+    "episode": 1,
+    "timestamp": "00:05:12",
+    "date": "2025-08-01",
+    "pokemon": {
+      "species": "Flygon",
+      "nickname": "Flappy",
+      "level": 4
+    },
+    "location": "Shadow Base",
+    "notes": "Starter Pokemon!",
+    "video": { "url": "https://youtu.be/dRyW5QFknKI?t=77" },
+    "side": "left"
+  },
+  {
+    "id": "e002",
+    "type": "caught",
+    "episode": 1,
+    "timestamp": "00:10:44",
+    "date": "2025-08-01",
+    "pokemon": {
+      "species": "Rattata",
+      "nickname": "Squeak",
+      "level": 3
+    },
+    "location": "Tall Grass",
+    "notes": "Quick capture shortly after.",
+    "side": "right"
+  },
+  {
+    "id": "e003",
+    "type": "fainted",
+    "episode": 2,
+    "timestamp": "00:12:30",
+    "date": "2025-08-02",
+    "pokemon": {
+      "species": "Flygon",
+      "nickname": "Flappy",
+      "level": 8
+    },
+    "location": "Route 3",
+    "notes": "Fainted against the rival's attack.",
+    "side": "left"
+  },
+  {
+    "id": "e004",
+    "type": "evolved",
+    "episode": 3,
+    "timestamp": "00:08:02",
+    "date": "2025-08-03",
+    "from": "Rattata",
+    "to": "Raticate",
+    "notes": "Squeak evolved during training.",
+    "side": "right"
+  },
+  {
+    "id": "e005",
+    "type": "badge",
+    "episode": 4,
+    "timestamp": "00:20:18",
+    "date": "2025-08-04",
+    "badge": "Boulder",
+    "notes": "Defeated the Gym Leader and earned the Boulder Badge.",
+    "side": "left"
+  }
+]

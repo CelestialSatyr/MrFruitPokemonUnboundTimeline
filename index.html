@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mr. Fruits' Pokemon Unbound Nuzlocke — Timeline</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <h1>Mr. Fruits' Pokemon Unbound Nuzlocke — Timeline</h1>
+        <p class="sub">A Timeline companion for Mr. Fruits' Pokemon Unbound Nuzlocke runs</p>
+      </div>
+
+      <div class="header-right">
+        <button id="rules-toggle" class="btn rules-btn" aria-expanded="false" aria-controls="rules-panel">Nuzlocke Rules ▾</button>
+      </div>
+    </div>
+
+    <!-- Hidden rules panel (toggled by script) -->
+    <div id="rules-panel" class="rules-panel" hidden>
+      <div class="rules-header">
+        <strong>Nuzlocke Rules</strong>
+        <button id="rules-close" class="btn small">Close</button>
+      </div>
+      <ol class="rules-list">
+        <li><strong>Faint = death</strong> — If a pokemon faints, it must be permanently placed inside PC Box</li>
+        <li><strong>First encounter only</strong> — Can only catch the first pokemon encountered in each route.</li>
+        <li><strong>Nickname all Pokémon</strong> — Must nickname every pokemon caught (will be named after someone in House Fruit: Be sure to comment!)</li>
+        <li><strong>Randomized</strong> — Every wild pokemon encounter, static pokemon encounter, trainer pokemon, ability and moveset/learnset are randomized.</li>
+        <li><strong>Black Out = Game Over</strong> — Black/white out = game over.</li>
+        <li><strong>Level Cap</strong> — No pokemon can exceed level of next gym leaders highest level</li>
+        <li><strong>4 Items per Battle</strong> — 4 Items used in-battle per battle</li>
+      </ol>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Run details banner -->
+    <section id="run-details" class="run-details" hidden>
+      <div class="run-left">
+        <img id="player-sprite" class="person-sprite" alt="player" />
+        <div class="person-info">
+          <div id="player-name" class="person-name"></div>
+          <div id="player-sub" class="person-sub"></div>
+        </div>
+      </div>
+
+      <div class="run-right">
+        <div class="person-info reverse">
+          <div id="rival-name" class="person-name"></div>
+          <div id="rival-sub" class="rival-sub"></div>
+        </div>
+        <img id="rival-sprite" class="person-sprite" alt="rival" />
+      </div>
+    </section>
+
+    <section class="controls">
+      <label>
+        Run:
+        <select id="run-selector" aria-label="Select run"></select>
+      </label>
+
+      <label>
+        Filter:
+        <select id="filter-type" aria-label="Filter by event type">
+          <option value="all">All events</option>
+          <option value="caught">Caught</option>
+          <option value="fainted">Fainted</option>
+          <option value="evolved">Evolved</option>
+          <option value="badge">Badge</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+
+      <label class="search-label">
+        Search:
+        <input id="search" placeholder="Species, nickname, or note..." />
+      </label>
+
+      <!-- Jump to episode controls -->
+      <label style="margin-left:auto;">
+        Jump to episode:
+        <select id="episode-selector" aria-label="Select episode"></select>
+        <button id="jump-episode">Jump</button>
+      </label>
+    </section>
+
+    <section id="timeline" class="timeline" aria-live="polite">
+      <!-- timeline content injected here -->
+    </section>
+
+    <div id="message" class="message" hidden></div>
+  </main>
+
+  <!-- Back to top -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">↑</button>
+
+  <footer class="footer">
+    <small>Made by CDev / Celestial</small><br>
+    <small>@celestialsatyr on Discord</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+<!-- This project is made by CDev / Celestial :  @celestialsatyr on Discord -->
+</html>

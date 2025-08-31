@@ -1,0 +1,13 @@
+{
+  "player": {
+    "name": "Fruit",
+    "species": "Flygon",
+    "subtitle": "Player"
+  },
+  "rival": {
+    "name": "Chat",
+    "species": "Machamp",
+    "subtitle": "Rival"
+  },
+  "notes": "Optional run notes go here."
+}
