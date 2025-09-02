@@ -1,70 +1,103 @@
-// script.js - timeline renderer with permalinks, jump, back-to-top, and rules panel
-
-// ---------- Configuration ----------
+/* ============================
+   Configuration
+   ============================ */
 const RUN_INDEX_PATH = "data/runs/index.json";
 const RUNS_BASE_PATH = "data/runs/";
 const SPRITES_PATH = "sprites/";
 const BADGES_PATH = `${SPRITES_PATH}badges/`;
-const DEFAULT_RUN_ID = "run-01";
-// -----------------------------------
+const DEFAULT_RUN_ID = "run-02";
+const SCROLL_OFFSET = 110; // offset for anchored scrolling (adjust if header size changes)
 
-/* ---------------- utility functions ---------------- */
-function speciesToFilename(species) {
-  if (!species) return null;
-  return String(species).toLowerCase().trim()
-    .replace(/['’]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9\-]/g, "");
+/* ============================
+   Small helpers
+   ============================ */
+
+/** Normalize species/badge names to filename-friendly strings */
+function speciesToFilename(name) {
+  if (!name) return null;
+  return String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, "")      // remove apostrophes
+    .replace(/\s+/g, "-")      // spaces -> dashes
+    .replace(/[^a-z0-9\-]/g, ""); // remove non-alphanumeric except dash
 }
+
+/** Build sprite URL for a species (returns null if species falsy) */
 function spriteUrlFor(species) {
   const filename = speciesToFilename(species);
   if (!filename) return null;
   return `${SPRITES_PATH}${filename}.png`;
 }
-function badgeUrlFor(badgeName) {
-  if (!badgeName) return null;
-  const filename = speciesToFilename(badgeName);
+
+/** Build badge URL */
+function badgeUrlFor(name) {
+  const filename = speciesToFilename(name);
+  if (!filename) return null;
   return `${BADGES_PATH}${filename}.png`;
 }
-function attachPlaceholderOnErrorOrNull(imgEl, species, url) {
+
+/** Small helper: safe-capitalize a string */
+function capitalize(s) {
+  if (s === null || s === undefined) return "";
+  s = String(s);
+  return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+}
+
+/** Attach placeholder behavior: set placeholder only if url missing or load fails */
+function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
+  if (!imgEl) return;
   if (!url) {
-    setSvgPlaceholder(imgEl, species);
+    setSvgPlaceholder(imgEl, label);
     return;
   }
   imgEl.onerror = function () {
     this.onerror = null;
-    setSvgPlaceholder(this, species);
+    setSvgPlaceholder(this, label);
   };
 }
-function setSvgPlaceholder(imgEl, species) {
-  const label = (species || "").slice(0, 3).toUpperCase();
+
+/** Generate a small SVG placeholder (data URL) with a short 3-letter label */
+function setSvgPlaceholder(imgEl, label) {
+  const short = (label || "").slice(0, 3).toUpperCase();
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>
     <rect width='100%' height='100%' fill='#f3f4ff'/>
-    <text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${label}</text>
+    <text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${short}</text>
   </svg>`;
   imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
+
+/** Fetch JSON with safe handling, returns null on failure */
 async function fetchJson(path) {
   try {
     const res = await fetch(path);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.warn(`fetchJson: ${path} returned ${res.status}`);
+      return null;
+    }
     return await res.json();
   } catch (err) {
-    console.warn("fetchJson error:", path, err);
+    console.warn(`fetchJson error: ${path}`, err);
     return null;
   }
 }
 
-/* ---------------- data loading / selector population ---------------- */
+/* ============================
+   Load runs list and selector
+   ============================ */
+
 async function loadRunsList() {
   const idx = await fetchJson(RUN_INDEX_PATH);
   if (!idx || !Array.isArray(idx.runs) || idx.runs.length === 0) {
+    // fallback default
     return [{ id: DEFAULT_RUN_ID, title: "Run 1" }];
   }
   return idx.runs;
 }
+
 function populateRunSelector(runs) {
   const sel = document.getElementById("run-selector");
+  if (!sel) return;
   sel.innerHTML = "";
   for (const r of runs) {
     const opt = document.createElement("option");
@@ -74,38 +107,47 @@ function populateRunSelector(runs) {
   }
 }
 
-/* ---------------- fetch run content ---------------- */
+/* ============================
+   Fetch per-run files
+   ============================ */
+
 async function fetchRunEvents(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/events.json`;
   const data = await fetchJson(path);
-  if (!data) return [];
-  if (!Array.isArray(data)) return [];
+  if (!data) {
+    console.warn("No events found for", runId, path);
+    return [];
+  }
+  if (!Array.isArray(data)) {
+    console.warn("events.json is not an array:", path);
+    return [];
+  }
   return data;
 }
+
 async function fetchRunMeta(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/meta.json`;
   const meta = await fetchJson(path);
   return meta || null;
 }
 
-/* ---------------- render events / timeline ---------------- */
-function createEventElement(ev) {
-  // wrapper (left/right placement)
-  const wrapper = document.createElement("article");
-  wrapper.className = "event " + ((ev.side === "right") ? "right" : "left");
+/* ============================
+   Create event element (header above body)
+   ============================ */
 
-  /* -------------------------
-     Header (top)
-     ------------------------- */
+function createEventElement(ev) {
+  const wrapper = document.createElement("article");
+  const side = (ev.side === "right") ? "right" : "left";
+  wrapper.className = `event ${side}`;
+
+  const type = (ev.type || "").toLowerCase();
+  if (type) wrapper.classList.add(`type-${type}`);
+  if (type === "fainted") wrapper.classList.add("fainted");
+
+  // Header (top)
   const header = document.createElement("div");
   header.className = "event-header";
-
-  // (small safe fallback if CSS not loaded yet)
-  header.style.minHeight = "1.5em";
-
   const level = ev.pokemon?.level ?? ev.level;
-  const type = (ev.type || "").toLowerCase();
-
   if (type === "caught") {
     header.textContent = level ? `Caught at Level ${level}` : "Caught";
   } else if (type === "fainted") {
@@ -117,23 +159,19 @@ function createEventElement(ev) {
   } else {
     header.textContent = (ev.type ? capitalize(ev.type) : "Event");
   }
-
-  // append header first (so it's above the body)
   wrapper.appendChild(header);
 
-  /* -------------------------
-     Body (below header)
-     ------------------------- */
+  // Body (visual + text)
   const bodyWrapper = document.createElement("div");
   bodyWrapper.className = "event-body";
 
-  // Left visual section: sprite / evolution / badge
   const visual = document.createElement("div");
   visual.className = "visual";
 
+  // Visual content
   if (type === "evolved" || type === "evolution") {
     const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || "";
-    const toName   = ev.to   || ev.pokemon?.to   || ev.pokemon?.after || "";
+    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
 
     const leftImg = document.createElement("img");
     leftImg.className = "sprite";
@@ -182,18 +220,15 @@ function createEventElement(ev) {
     visual.appendChild(spriteImg);
   }
 
-  /* -------------------------
-     Text area (right side of body)
-     ------------------------- */
+  // Text section
   const text = document.createElement("div");
   text.className = "item-body";
 
-  // Species + nickname line
   const speciesNick = document.createElement("div");
   speciesNick.className = "species-nick";
   if (type === "evolved" || type === "evolution") {
     const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || "";
-    const toName   = ev.to   || ev.pokemon?.to   || ev.pokemon?.after || "";
+    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
     const nick = ev.pokemon?.nickname || ev.nickname;
     if (fromName && toName) {
       speciesNick.textContent = nick ? `${fromName} → ${toName} • Named after ${nick}` : `${fromName} → ${toName}`;
@@ -209,7 +244,7 @@ function createEventElement(ev) {
   }
   if (speciesNick.textContent) text.appendChild(speciesNick);
 
-  // Obtained / location + timecode link line
+  // Obtained line (location + timecode link)
   const obtainedLine = document.createElement("div");
   obtainedLine.className = "obtained-line";
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
@@ -236,30 +271,38 @@ function createEventElement(ev) {
     text.appendChild(notes);
   }
 
-  // assemble body: visual left, text right
+  // assemble body
   bodyWrapper.appendChild(visual);
   bodyWrapper.appendChild(text);
 
-  // append body AFTER header (so header is on top)
   wrapper.appendChild(bodyWrapper);
-
   return wrapper;
 }
 
+/* ============================
+   Render timeline (with episode banners & run-end)
+   ============================ */
 
 function renderTimeline(events) {
   const container = document.getElementById("timeline");
   const messageEl = document.getElementById("message");
+  if (!container) {
+    console.warn("No #timeline element found.");
+    return;
+  }
   container.innerHTML = "";
-  messageEl.hidden = true;
+  if (messageEl) messageEl.hidden = true;
 
   if (!events || events.length === 0) {
-    messageEl.hidden = false;
-    messageEl.textContent = "No events found for this run.";
-    populateEpisodeSelector([]);
+    if (messageEl) {
+      messageEl.hidden = false;
+      messageEl.textContent = "No events found for this run.";
+    }
+    populateEpisodeSelector([]); // clear episodes
     return;
   }
 
+  // sort events by episode then timestamp
   events.sort((a, b) => {
     const ea = a.episode ?? 0;
     const eb = b.episode ?? 0;
@@ -269,16 +312,34 @@ function renderTimeline(events) {
     return ta.localeCompare(tb, undefined, {numeric:true});
   });
 
-  const episodes = [];
   let lastEpisode = null;
+  const episodes = [];
+
   for (const ev of events) {
+    const evType = (ev.type || "").toLowerCase();
+
+    // render run-end markers as full-width banners
+    if (evType === "run_end" || evType === "runended" || evType === "run_ended" || evType === "end") {
+      const endBanner = document.createElement("div");
+      endBanner.className = "run-end-banner";
+      const parts = [];
+      if (ev.episode !== undefined) parts.push(`Episode ${ev.episode}`);
+      if (ev.date) parts.push(ev.date);
+      const note = ev.notes ? ` — ${ev.notes}` : "";
+      endBanner.textContent = `Run Ended${parts.length ? " — " + parts.join(" • ") : ""}${note}`;
+      container.appendChild(endBanner);
+      lastEpisode = ev.episode;
+      continue;
+    }
+
+    // episode banner
     if (ev.episode !== lastEpisode) {
       const banner = document.createElement("div");
       banner.className = "episode-banner";
-      const dateText = ev.date ? ` • ${ev.date}` : "";
-      banner.textContent = `Episode ${ev.episode}${dateText}`;
+      banner.textContent = `Episode ${ev.episode}` + (ev.date ? ` • ${ev.date}` : "");
+      banner.id = `episode-${ev.episode}`;
 
-      // add permalink button
+      // permalink button (copies url with hash and briefly indicates success)
       const permBtn = document.createElement("button");
       permBtn.className = "permalink";
       permBtn.title = "Copy permalink to this episode";
@@ -286,16 +347,15 @@ function renderTimeline(events) {
       permBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         const anchor = `episode-${ev.episode}`;
-        // update hash in URL without page jump (use history API)
+        // update hash without jumping
         history.replaceState(null, "", `#${anchor}`);
-        // copy full URL to clipboard
         const url = location.href;
         if (navigator.clipboard?.writeText) {
           navigator.clipboard.writeText(url).then(() => {
+            const prev = permBtn.textContent;
             permBtn.textContent = "✓";
-            setTimeout(() => permBtn.textContent = "🔗", 1200);
+            setTimeout(() => permBtn.textContent = prev, 1200);
           }).catch(() => {
-            // fallback: select and copy
             alert("Copy this link: " + url);
           });
         } else {
@@ -304,26 +364,29 @@ function renderTimeline(events) {
       });
 
       banner.appendChild(permBtn);
-
-      // set id for anchor navigation
-      banner.id = `episode-${ev.episode}`;
       container.appendChild(banner);
 
-      episodes.push({episode: ev.episode, date: ev.date || ""});
+      episodes.push({ episode: ev.episode, date: ev.date || "" });
       lastEpisode = ev.episode;
     }
+
     const el = createEventElement(ev);
     container.appendChild(el);
   }
+
   populateEpisodeSelector(episodes);
 
-  // if there's a hash or ?episode= param, scroll to it after render
+  // After render, handle permalink from URL if any
   handlePermalinkOnLoad();
 }
 
-/* ---------------- episode selector & jump ---------------- */
+/* ============================
+   Episode selector & Jump
+   ============================ */
+
 function populateEpisodeSelector(episodes) {
   const sel = document.getElementById("episode-selector");
+  if (!sel) return;
   sel.innerHTML = "";
   const placeholder = document.createElement("option");
   placeholder.value = "";
@@ -335,57 +398,62 @@ function populateEpisodeSelector(episodes) {
     opt.textContent = e.date ? `Episode ${e.episode} — ${e.date}` : `Episode ${e.episode}`;
     sel.appendChild(opt);
   }
+
   const jumpBtn = document.getElementById("jump-episode");
+  if (!jumpBtn) return;
   jumpBtn.onclick = () => {
     const val = sel.value;
     if (!val) return;
     const anchor = `episode-${val}`;
-    // update the hash (so users can copy URL from address bar or share)
+    // set hash for shareability
     location.hash = `#${anchor}`;
-    // scroll to anchor smoothly (offset for header)
     const target = document.getElementById(anchor);
     if (!target) return;
-    const offset = 110;
-    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
     window.scrollTo({ top, behavior: "smooth" });
   };
 }
 
-/* ---------------- permalink handling on page load ---------------- */
+/* ============================
+   Permalink handling on load
+   ============================ */
+
 function handlePermalinkOnLoad() {
-  // prefer hash (#episode-3) else query param ?episode=3
+  // Prefer hash (#episode-3), fallback to query param ?episode=3
   const h = location.hash;
   if (h && h.startsWith("#episode-")) {
     const anchor = h.substring(1);
     const target = document.getElementById(anchor);
     if (target) {
-      const offset = 110;
-      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
       return;
     }
   }
-  // fallback: ?episode=3
   const params = new URLSearchParams(location.search);
   const epi = params.get("episode");
   if (epi) {
     const anchor = `episode-${epi}`;
     const target = document.getElementById(anchor);
     if (target) {
-      const offset = 110;
-      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
     }
   }
 }
 
-/* ---------------- run details banner population ---------------- */
+/* ============================
+   Run details / meta rendering
+   ============================ */
+
 function populateRunDetails(meta) {
   const container = document.getElementById("run-details");
+  if (!container) return;
   if (!meta) {
     container.hidden = true;
     return;
   }
+
   const playerSpriteEl = document.getElementById("player-sprite");
   const rivalSpriteEl = document.getElementById("rival-sprite");
   const playerNameEl = document.getElementById("player-name");
@@ -415,31 +483,51 @@ function populateRunDetails(meta) {
   if (rivalSpriteUrl) rivalSpriteEl.src = rivalSpriteUrl;
   attachPlaceholderOnErrorOrNull(rivalSpriteEl, meta.rival?.species, rivalSpriteUrl);
 
-  // Optionally show custom rules snippet if present in meta
-  // e.g. meta.rules = ["No items in battle", "Dupes clause enabled"]
-  const rulesPanel = document.getElementById("rules-panel");
+  // show run-ended top badge if meta.ended present
+  if (meta.ended) {
+    const existing = container.querySelector(".run-ended-top");
+    const text = `Run ended: Episode ${meta.ended.episode}` + (meta.ended.date ? ` • ${meta.ended.date}` : "") + (meta.ended.note ? ` — ${meta.ended.note}` : "");
+    if (existing) existing.textContent = text;
+    else {
+      const el = document.createElement("div");
+      el.className = "run-ended-top";
+      el.textContent = text;
+      container.appendChild(el);
+    }
+  } else {
+    // remove any existing run-ended-top if meta changed
+    const existing = container.querySelector(".run-ended-top");
+    if (existing) existing.remove();
+  }
+
+  // optionally add run-specific rules note
   if (meta.rules && Array.isArray(meta.rules) && meta.rules.length) {
-    const note = document.createElement("div");
-    note.className = "rules-note";
-    note.textContent = `Run-specific rules: ${meta.rules.join("; ")}`;
-    // append to the rules panel if not already present
-    if (!rulesPanel.querySelector(".rules-note.dynamic")) {
-      note.classList.add("dynamic");
-      rulesPanel.appendChild(note);
-    } else {
+    const rulesPanel = document.getElementById("rules-panel");
+    if (rulesPanel) {
       const existing = rulesPanel.querySelector(".rules-note.dynamic");
-      existing.textContent = `Run-specific rules: ${meta.rules.join("; ")}`;
+      const text = `Run-specific rules: ${meta.rules.join("; ")}`;
+      if (existing) existing.textContent = text;
+      else {
+        const note = document.createElement("div");
+        note.className = "rules-note dynamic";
+        note.textContent = text;
+        rulesPanel.appendChild(note);
+      }
     }
   }
 
   container.hidden = false;
 }
 
-/* ---------------- rules panel toggle ---------------- */
+/* ============================
+   Rules panel toggle
+   ============================ */
+
 function initRulesToggle() {
   const toggle = document.getElementById("rules-toggle");
   const panel = document.getElementById("rules-panel");
   const closeBtn = document.getElementById("rules-close");
+  if (!toggle || !panel) return;
 
   function openPanel() {
     panel.hidden = false;
@@ -453,38 +541,35 @@ function initRulesToggle() {
     if (panel.hidden) openPanel(); else closePanel();
   });
   closeBtn?.addEventListener("click", closePanel);
-
-  // close on Escape
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closePanel();
-  });
-  // click outside to close
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePanel(); });
   document.addEventListener("click", (e) => {
-    if (!panel.hidden && !panel.contains(e.target) && !document.getElementById("rules-toggle").contains(e.target)) {
-      closePanel();
-    }
+    if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target)) closePanel();
   });
 }
 
-/* ---------------- back-to-top ---------------- */
+/* ============================
+   Back to top button
+   ============================ */
+
 function initBackToTop() {
   const btn = document.getElementById("back-to-top");
+  if (!btn) return;
   function check() {
-    if (window.scrollY > 480) btn.style.display = "flex";
-    else btn.style.display = "none";
+    btn.style.display = (window.scrollY > 480) ? "flex" : "none";
   }
   window.addEventListener("scroll", check);
-  btn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   check();
 }
 
-/* ---------------- main UI wiring ---------------- */
+/* ============================
+   Load + display run (filter/search)
+   ============================ */
+
 async function loadAndDisplayRun(runId) {
   const allEvents = await fetchRunEvents(runId);
-  const filterType = document.getElementById("filter-type").value;
-  const q = (document.getElementById("search").value || "").trim().toLowerCase();
+  const filterType = document.getElementById("filter-type")?.value || "all";
+  const q = (document.getElementById("search")?.value || "").trim().toLowerCase();
 
   let events = allEvents.slice();
   if (filterType && filterType !== "all") {
@@ -504,10 +589,13 @@ async function loadAndDisplayRun(runId) {
 
   renderTimeline(events);
 
-  // load meta and populate run details (and optionally rules)
   const meta = await fetchRunMeta(runId);
   populateRunDetails(meta);
 }
+
+/* ============================
+   Startup wiring
+   ============================ */
 
 async function init() {
   initRulesToggle();
@@ -517,16 +605,27 @@ async function init() {
   populateRunSelector(runs);
 
   const runSel = document.getElementById("run-selector");
-  runSel.addEventListener("change", () => loadAndDisplayRun(runSel.value));
-  document.getElementById("filter-type").addEventListener("change", () => loadAndDisplayRun(runSel.value));
-  document.getElementById("search").addEventListener("input", () => loadAndDisplayRun(runSel.value));
+  runSel?.addEventListener("change", () => {
+    // when user switches run, update URL query param for shareability
+    const runId = runSel.value;
+    const url = new URL(location);
+    url.searchParams.set("run", runId);
+    history.replaceState(null, "", url.toString());
+    loadAndDisplayRun(runId);
+  });
 
-  // On load: if URL has ?run=run-02, select it
+  document.getElementById("filter-type")?.addEventListener("change", () => loadAndDisplayRun(runSel.value));
+  document.getElementById("search")?.addEventListener("input", () => loadAndDisplayRun(runSel.value));
+
+  // choose initial run: ?run=run-02 or first in index
   const params = new URLSearchParams(location.search);
   const runParam = params.get("run");
-  const initial = (runParam && runs.find(r=>r.id===runParam)?.id) || runs[0]?.id || DEFAULT_RUN_ID;
-  runSel.value = initial;
+  const initial = (runParam && runs.find(r => r.id === runParam)?.id) || runs[0]?.id || DEFAULT_RUN_ID;
+  if (runSel) runSel.value = initial;
   await loadAndDisplayRun(initial);
 }
 
+/* ============================
+   Run the init on DOMContentLoaded
+   ============================ */
 document.addEventListener("DOMContentLoaded", init);

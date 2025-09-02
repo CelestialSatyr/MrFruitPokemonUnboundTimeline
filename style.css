@@ -336,3 +336,69 @@ header{
   font-size:1rem; 
   align-self: center;
 }
+
+/* ---------------- Run-ended / fainted visuals ---------------- */
+
+/* End-of-run banner in timeline (full-width, eye-catching) */
+.run-end-banner {
+  clear: both;
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin: 22px 0;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, #b00000, #ff6b6b);
+  color: white;
+  border-radius: 10px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(176, 0, 0, 0.12);
+  position: relative;
+  z-index: 6; /* above timeline line */
+}
+
+/* Top-run small badge inside run-details for ended runs */
+.run-ended-top {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#fff5f5,#fff0f0);
+  color: #8a0000;
+  font-weight:700;
+  border:1px solid #ffd6d6;
+}
+
+/* Fainted event treatment: greyscale portrait + header color */
+.event.fainted .sprite,
+.event.fainted .badge-icon {
+  filter: grayscale(100%) contrast(85%);
+  opacity: 0.72;
+}
+
+/* Fainted header color */
+.event.fainted .event-header {
+  background: linear-gradient(180deg,#fff0f0,#ffe6e6);
+  color: #7a0011;
+  border: 1px solid #ffcccc;
+}
+
+/* Slight visual cue on entire card (optional subtle border) */
+.event.fainted {
+  box-shadow: 0 8px 24px rgba(160, 16, 16, 0.04);
+}
+
+/* Ensure run-end banners and episode banners are above the line */
+.episode-banner, .run-end-banner {
+  position: relative;
+  z-index: 5;
+}
+
+/* Ensure events remain above timeline (if you have overwritten z-index earlier) */
+.event {
+  position: relative;
+  z-index: 4;
+}
+
+/* tidy mobile behavior (fainted still applies) */
+@media (max-width: 900px) {
+  .event.fainted .sprite { opacity:0.78; }
+}

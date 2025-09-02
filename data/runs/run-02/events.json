@@ -1,0 +1,34 @@
+[
+  {
+    "id": "e001",
+    "type": "caught",
+    "episode": 2,
+    "timestamp": "00:35:45",
+    "date": "2025-09-02",
+    "pokemon": {
+      "species": "Pyroar",
+      "nickname": "MsTopHats",
+      "level": 10
+    },
+    "location": "Shadow Base",
+    "notes": "Our starter pokemon! Has the ability 'Rock Head'",
+    "video": { "url": "35:45 https://youtu.be/iBEVeJe0Ims?t=2145" },
+    "side": "left"
+  },
+  {
+    "id": "e002",
+    "type": "caught",
+    "episode": 2,
+    "timestamp": "00:43:46",
+    "date": "2025-09-02",
+    "pokemon": {
+      "species": "Loudred",
+      "nickname": "Cap32k",
+      "level": 9
+    },
+    "location": "Route 1",
+    "notes": "First encounter, has the ability 'Flash Fire'",
+    "video": { "url": "https://youtu.be/iBEVeJe0Ims?t=2626" },
+    "side": "left"
+  }
+]
