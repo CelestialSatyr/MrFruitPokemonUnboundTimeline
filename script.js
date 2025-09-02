@@ -248,7 +248,12 @@ function createEventElement(ev) {
   const obtainedLine = document.createElement("div");
   obtainedLine.className = "obtained-line";
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
-  if (location) obtainedLine.appendChild(document.createTextNode(`Obtained via: ${location}`));
+  if (ev.type === "caught"){
+    if (location) obtainedLine.appendChild(document.createTextNode(`Obtained via: ${location}`));
+  }
+  if (ev.type === "fainted"){
+    if (location) obtainedLine.appendChild(document.createTextNode(`Died in: ${location}`));
+  }
   if (ev.timestamp && ev.video?.url) {
     if (location) obtainedLine.appendChild(document.createTextNode(" at "));
     const a = document.createElement("a");
