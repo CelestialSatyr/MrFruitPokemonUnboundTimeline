@@ -5,46 +5,55 @@ const RUN_INDEX_PATH = "data/runs/index.json";
 const RUNS_BASE_PATH = "data/runs/";
 const SPRITES_PATH = "sprites/";
 const BADGES_PATH = `${SPRITES_PATH}badges/`;
-const DEFAULT_RUN_ID = "run-02";
-const SCROLL_OFFSET = 110; // offset for anchored scrolling (adjust if header size changes)
+const DEFAULT_RUN_ID = "run-02"; // fallback run id if none selected
+const SCROLL_OFFSET = 110; // offset for anchored scrolling (adjust for header height)
+
+/* ============================
+   Global runtime state
+   ============================ */
+let CURRENT_RUN_ID = null;
+const COLLAPSED_KEY_PREFIX = "nuz_timeline_collapsed:"; // localStorage prefix
 
 /* ============================
    Small helpers
    ============================ */
-
-/** Normalize species/badge names to filename-friendly strings */
 function speciesToFilename(name) {
   if (!name) return null;
   return String(name)
     .toLowerCase()
     .trim()
-    .replace(/['’]/g, "")      // remove apostrophes
-    .replace(/\s+/g, "-")      // spaces -> dashes
-    .replace(/[^a-z0-9\-]/g, ""); // remove non-alphanumeric except dash
+    .replace(/['’]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "");
 }
 
-/** Build sprite URL for a species (returns null if species falsy) */
 function spriteUrlFor(species) {
   const filename = speciesToFilename(species);
   if (!filename) return null;
   return `${SPRITES_PATH}${filename}.png`;
 }
 
-/** Build badge URL */
 function badgeUrlFor(name) {
   const filename = speciesToFilename(name);
   if (!filename) return null;
   return `${BADGES_PATH}${filename}.png`;
 }
 
-/** Small helper: safe-capitalize a string */
 function capitalize(s) {
   if (s === null || s === undefined) return "";
   s = String(s);
   return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : "";
 }
 
-/** Attach placeholder behavior: set placeholder only if url missing or load fails */
+function setSvgPlaceholder(imgEl, label) {
+  const short = (label || "").slice(0, 3).toUpperCase();
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>
+    <rect width='100%' height='100%' fill='#f3f4ff'/>
+    <text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${short}</text>
+  </svg>`;
+  imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
 function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
   if (!imgEl) return;
   if (!url) {
@@ -57,22 +66,11 @@ function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
   };
 }
 
-/** Generate a small SVG placeholder (data URL) with a short 3-letter label */
-function setSvgPlaceholder(imgEl, label) {
-  const short = (label || "").slice(0, 3).toUpperCase();
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>
-    <rect width='100%' height='100%' fill='#f3f4ff'/>
-    <text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${short}</text>
-  </svg>`;
-  imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-}
-
-/** Fetch JSON with safe handling, returns null on failure */
 async function fetchJson(path) {
   try {
     const res = await fetch(path);
     if (!res.ok) {
-      console.warn(`fetchJson: ${path} returned ${res.status}`);
+      console.warn(`fetchJson: ${path} -> ${res.status}`);
       return null;
     }
     return await res.json();
@@ -82,19 +80,70 @@ async function fetchJson(path) {
   }
 }
 
-/* ============================
-   Load runs list and selector
-   ============================ */
+/**
+ * Parse location.hash and location.search and return:
+ * { anchor: "episode-12" | null, params: URLSearchParams }
+ * - supports hashes like "#episode-12?spoiler=0"
+ * - merges any query params in location.search with the hash params (hash params win)
+ */
+function parseHashAnchorAndParams() {
+  const params = new URLSearchParams(window.location.search || "");
+  const rawHash = (window.location.hash || "").replace(/^#/, ""); // remove leading '#'
+  if (!rawHash) return { anchor: null, params };
 
+  const qIdx = rawHash.indexOf("?");
+  let anchor = rawHash;
+  if (qIdx !== -1) {
+    anchor = rawHash.substring(0, qIdx);
+    const hashQuery = rawHash.substring(qIdx + 1);
+    const hashParams = new URLSearchParams(hashQuery);
+    // merge hashParams into params (hash params override search params)
+    for (const [k, v] of hashParams.entries()) params.set(k, v);
+  }
+  return { anchor, params };
+}
+
+/* ============================
+   LocalStorage: collapsed episodes per-run
+   ============================ */
+function loadCollapsedMap(runId) {
+  try {
+    const raw = localStorage.getItem(COLLAPSED_KEY_PREFIX + runId);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return new Set();
+    return new Set(arr.map(x => Number(x)));
+  } catch (e) {
+    console.warn("Failed to load collapsed map:", e);
+    return new Set();
+  }
+}
+function saveCollapsedMap(runId, set) {
+  try {
+    const arr = Array.from(set.values());
+    localStorage.setItem(COLLAPSED_KEY_PREFIX + runId, JSON.stringify(arr));
+  } catch (e) {
+    console.warn("Failed to save collapsed map:", e);
+  }
+}
+function clearCollapsedMap(runId) {
+  try {
+    localStorage.removeItem(COLLAPSED_KEY_PREFIX + runId);
+  } catch (e) {
+    console.warn("Failed to clear collapsed map:", e);
+  }
+}
+
+/* ============================
+   Runs list
+   ============================ */
 async function loadRunsList() {
   const idx = await fetchJson(RUN_INDEX_PATH);
   if (!idx || !Array.isArray(idx.runs) || idx.runs.length === 0) {
-    // fallback default
     return [{ id: DEFAULT_RUN_ID, title: "Run 1" }];
   }
   return idx.runs;
 }
-
 function populateRunSelector(runs) {
   const sel = document.getElementById("run-selector");
   if (!sel) return;
@@ -108,9 +157,8 @@ function populateRunSelector(runs) {
 }
 
 /* ============================
-   Fetch per-run files
+   Fetch run files
    ============================ */
-
 async function fetchRunEvents(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/events.json`;
   const data = await fetchJson(path);
@@ -124,7 +172,6 @@ async function fetchRunEvents(runId) {
   }
   return data;
 }
-
 async function fetchRunMeta(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/meta.json`;
   const meta = await fetchJson(path);
@@ -132,9 +179,8 @@ async function fetchRunMeta(runId) {
 }
 
 /* ============================
-   Create event element (header above body)
+   Event element builder
    ============================ */
-
 function createEventElement(ev) {
   const wrapper = document.createElement("article");
   const side = (ev.side === "right") ? "right" : "left";
@@ -190,12 +236,10 @@ function createEventElement(ev) {
     const evoRow = document.createElement("div");
     evoRow.className = "evolution-row";
     evoRow.appendChild(leftImg);
-
     const arrow = document.createElement("div");
     arrow.className = "evolve-arrow";
     arrow.textContent = "➡";
     evoRow.appendChild(arrow);
-
     evoRow.appendChild(rightImg);
     visual.appendChild(evoRow);
 
@@ -224,6 +268,7 @@ function createEventElement(ev) {
   const text = document.createElement("div");
   text.className = "item-body";
 
+  // species + nickname or evolution text
   const speciesNick = document.createElement("div");
   speciesNick.className = "species-nick";
   if (type === "evolved" || type === "evolution") {
@@ -244,16 +289,15 @@ function createEventElement(ev) {
   }
   if (speciesNick.textContent) text.appendChild(speciesNick);
 
-  // Obtained line (location + timecode link)
+  // Obtained / Died / timecode
   const obtainedLine = document.createElement("div");
   obtainedLine.className = "obtained-line";
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
-  if (ev.type === "caught"){
-    if (location) obtainedLine.appendChild(document.createTextNode(`Obtained via: ${location}`));
-  }
-  if (ev.type === "fainted"){
-    if (location) obtainedLine.appendChild(document.createTextNode(`Died in: ${location}`));
-  }
+  // label depends on event type
+  let locLabel = "Obtained via:";
+  if (type === "fainted") locLabel = "Died at:";
+  else if (type === "end") locLabel = "Final location:";
+  if (location) obtainedLine.appendChild(document.createTextNode(`${locLabel} ${location}`));
   if (ev.timestamp && ev.video?.url) {
     if (location) obtainedLine.appendChild(document.createTextNode(" at "));
     const a = document.createElement("a");
@@ -262,13 +306,12 @@ function createEventElement(ev) {
     a.rel = "noopener";
     a.textContent = ev.timestamp;
     obtainedLine.appendChild(a);
-  } else if (ev.timestamp) {
-    if (location) obtainedLine.appendChild(document.createTextNode(" at "));
+  } else if (ev.timestamp && !location) {
     obtainedLine.appendChild(document.createTextNode(ev.timestamp));
   }
   if (obtainedLine.textContent || obtainedLine.children.length) text.appendChild(obtainedLine);
 
-  // Notes
+  // notes
   if (ev.notes) {
     const notes = document.createElement("div");
     notes.className = "item-notes";
@@ -279,15 +322,68 @@ function createEventElement(ev) {
   // assemble body
   bodyWrapper.appendChild(visual);
   bodyWrapper.appendChild(text);
-
   wrapper.appendChild(bodyWrapper);
   return wrapper;
 }
 
 /* ============================
-   Render timeline (with episode banners & run-end)
+   Episode section toggle helpers
    ============================ */
+function toggleEpisodeSection(runId, episode, expand) {
+  const section = document.querySelector(`.episode-section[data-episode="${episode}"]`);
+  if (!section) return;
+  const banner = section.querySelector(".episode-banner");
+  const contents = section.querySelector(".episode-contents");
+  if (!banner || !contents) return;
 
+  const isExpanded = banner.getAttribute("aria-expanded") === "true";
+  let willExpand = (typeof expand === "boolean") ? expand : !isExpanded;
+
+  // update attributes/classes
+  banner.setAttribute("aria-expanded", willExpand ? "true" : "false");
+  if (willExpand) {
+    contents.classList.remove("collapsed");
+    contents.setAttribute("aria-hidden", "false");
+    // measure and set max-height for smooth transition
+    const full = contents.scrollHeight;
+    contents.style.maxHeight = (full > 0 ? full + "px" : "2000px");
+  } else {
+    contents.style.maxHeight = "0px";
+    contents.classList.add("collapsed");
+    contents.setAttribute("aria-hidden", "true");
+  }
+
+  // persist collapsed state
+  const map = loadCollapsedMap(runId);
+  if (!willExpand) map.add(Number(episode));
+  else map.delete(Number(episode));
+  saveCollapsedMap(runId, map);
+}
+
+function setAllCollapsed(runId, collapsed) {
+  const sections = document.querySelectorAll(`.episode-section`);
+  const map = loadCollapsedMap(runId);
+  if (collapsed) {
+    // collapse all: add every episode number to map
+    sections.forEach(sec => {
+      const ep = Number(sec.dataset.episode);
+      toggleEpisodeSection(runId, ep, false);
+      map.add(ep);
+    });
+  } else {
+    // expand all: remove map and expand each
+    sections.forEach(sec => {
+      const ep = Number(sec.dataset.episode);
+      toggleEpisodeSection(runId, ep, true);
+      map.delete(ep);
+    });
+  }
+  saveCollapsedMap(runId, map);
+}
+
+/* ============================
+   renderTimeline (collapsible episodes)
+   ============================ */
 function renderTimeline(events) {
   const container = document.getElementById("timeline");
   const messageEl = document.getElementById("message");
@@ -307,7 +403,7 @@ function renderTimeline(events) {
     return;
   }
 
-  // sort events by episode then timestamp
+  // sort & group by episode
   events.sort((a, b) => {
     const ea = a.episode ?? 0;
     const eb = b.episode ?? 0;
@@ -317,78 +413,165 @@ function renderTimeline(events) {
     return ta.localeCompare(tb, undefined, {numeric:true});
   });
 
-  let lastEpisode = null;
-  const episodes = [];
-
+  const episodesOrder = [];
+  const episodesMap = new Map();
   for (const ev of events) {
-    const evType = (ev.type || "").toLowerCase();
-
-    // render run-end markers as full-width banners
-    if (evType === "run_end" || evType === "runended" || evType === "run_ended" || evType === "end") {
-      const endBanner = document.createElement("div");
-      endBanner.className = "run-end-banner";
-      const parts = [];
-      if (ev.episode !== undefined) parts.push(`Episode ${ev.episode}`);
-      if (ev.date) parts.push(ev.date);
-      const note = ev.notes ? ` — ${ev.notes}` : "";
-      endBanner.textContent = `Run Ended${parts.length ? " — " + parts.join(" • ") : ""}${note}`;
-      container.appendChild(endBanner);
-      lastEpisode = ev.episode;
-      continue;
+    const ep = ev.episode ?? 0;
+    if (!episodesMap.has(ep)) {
+      episodesMap.set(ep, []);
+      episodesOrder.push(ep);
     }
-
-    // episode banner
-    if (ev.episode !== lastEpisode) {
-      const banner = document.createElement("div");
-      banner.className = "episode-banner";
-      banner.textContent = `Episode ${ev.episode}` + (ev.date ? ` • ${ev.date}` : "");
-      banner.id = `episode-${ev.episode}`;
-
-      // permalink button (copies url with hash and briefly indicates success)
-      const permBtn = document.createElement("button");
-      permBtn.className = "permalink";
-      permBtn.title = "Copy permalink to this episode";
-      permBtn.innerHTML = "🔗";
-      permBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const anchor = `episode-${ev.episode}`;
-        // update hash without jumping
-        history.replaceState(null, "", `#${anchor}`);
-        const url = location.href;
-        if (navigator.clipboard?.writeText) {
-          navigator.clipboard.writeText(url).then(() => {
-            const prev = permBtn.textContent;
-            permBtn.textContent = "✓";
-            setTimeout(() => permBtn.textContent = prev, 1200);
-          }).catch(() => {
-            alert("Copy this link: " + url);
-          });
-        } else {
-          alert("Copy this link: " + url);
-        }
-      });
-
-      banner.appendChild(permBtn);
-      container.appendChild(banner);
-
-      episodes.push({ episode: ev.episode, date: ev.date || "" });
-      lastEpisode = ev.episode;
-    }
-
-    const el = createEventElement(ev);
-    container.appendChild(el);
+    episodesMap.get(ep).push(ev);
   }
 
-  populateEpisodeSelector(episodes);
+  // persisted collapsed map for current run
+  const runKey = CURRENT_RUN_ID || DEFAULT_RUN_ID;
+  const persisted = loadCollapsedMap(runKey);
+  const hasPersisted = (localStorage.getItem(COLLAPSED_KEY_PREFIX + runKey) !== null);
 
-  // After render, handle permalink from URL if any
+  // if user hasn't set preference, collapse the last episode by default (avoid spoilers)
+  if (!hasPersisted && episodesOrder.length > 0) {
+    const lastEp = episodesOrder[episodesOrder.length - 1];
+    persisted.add(Number(lastEp));
+    saveCollapsedMap(runKey, persisted);
+  }
+
+  const episodesArr = [];
+  for (const ep of episodesOrder) {
+    const section = document.createElement("section");
+    section.className = "episode-section";
+    section.dataset.episode = String(ep);
+
+    // banner
+    const banner = document.createElement("div");
+    banner.className = "episode-banner";
+    banner.tabIndex = 0;
+    banner.setAttribute("role", "button");
+    const isExpanded = !persisted.has(Number(ep));
+    banner.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+
+    const epDate = episodesMap.get(ep)[0]?.date;
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "episode-title";
+    titleSpan.textContent = `Episode ${ep}` + (epDate ? ` • ${epDate}` : "");
+    banner.appendChild(titleSpan);
+
+    // controls: permalink + chevron
+    const controls = document.createElement("div");
+    controls.className = "controls";
+
+    const permBtn = document.createElement("button");
+    permBtn.className = "permalink";
+    permBtn.title = "Copy permalink to this episode";
+    permBtn.innerHTML = "🔗";
+    permBtn.title = "Click: copy expanded link — Shift+Click: copy spoiler-safe (collapsed) link";
+    permBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const anchor = `episode-${ep}`;
+    const base = location.origin + location.pathname + location.search; // keep existing search (if any)
+    // Expanded link (default): #episode-<n>
+    const expandedUrl = base + `#${anchor}`;
+
+    // Safe (collapsed) link: #episode-<n>?spoiler=0
+    // NOTE: we put the spoiler param inside the hash so it's portable when copying anchors only.
+    const safeUrl = base + `#${anchor}?spoiler=0`;
+
+    const toCopy = e.shiftKey ? safeUrl : expandedUrl;
+
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(toCopy).then(() => {
+        const prev = permBtn.textContent;
+        permBtn.textContent = "✓";
+        setTimeout(() => permBtn.textContent = prev, 1200);
+      }).catch(() => {
+        alert("Copy this link: " + toCopy);
+      });
+    } else {
+      // fallback
+      try {
+        window.prompt("Copy link (Ctrl+C / Cmd+C):", toCopy);
+      } catch (err) {
+        alert("Copy this link: " + toCopy);
+      }
+    }
+  });
+    controls.appendChild(permBtn);
+
+    const chev = document.createElement("span");
+    chev.className = "chev";
+    chev.setAttribute("aria-hidden", "true");
+    chev.textContent = "▾";
+    controls.appendChild(chev);
+
+    banner.appendChild(controls);
+
+    // toggle events
+    banner.addEventListener("click", () => toggleEpisodeSection(runKey, ep));
+    banner.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        toggleEpisodeSection(runKey, ep);
+      }
+    });
+
+    section.appendChild(banner);
+
+    // contents container
+    const contents = document.createElement("div");
+    contents.className = "episode-contents";
+    contents.id = `episode-contents-${ep}`;
+    if (!isExpanded) {
+      contents.classList.add("collapsed");
+      contents.setAttribute("aria-hidden", "true");
+      contents.style.maxHeight = "0px";
+    } else {
+      contents.setAttribute("aria-hidden", "false");
+      // will set measured maxHeight after append
+    }
+
+    // append events
+    const epEvents = episodesMap.get(ep) || [];
+    for (const ev of epEvents) {
+      const evType = (ev.type || "").toLowerCase();
+      if (evType === "run_end" || evType === "runended" || evType === "run_ended" || evType === "end") {
+        const endBanner = document.createElement("div");
+        endBanner.className = "run-end-banner";
+        const parts = [];
+        if (ev.episode !== undefined) parts.push(`Episode ${ev.episode}`);
+        if (ev.date) parts.push(ev.date);
+        const note = ev.notes ? ` — ${ev.notes}` : "";
+        endBanner.textContent = `Run Ended${parts.length ? " — " + parts.join(" • ") : ""}${note}`;
+        contents.appendChild(endBanner);
+        continue;
+      }
+      const el = createEventElement(ev);
+      contents.appendChild(el);
+    }
+
+    section.appendChild(contents);
+    container.appendChild(section);
+    episodesArr.push({ episode: ep, date: epDate || "" });
+
+    // set measured maxHeight for expanded content for smoother transitions
+    if (isExpanded) {
+      requestAnimationFrame(() => {
+        const h = contents.scrollHeight;
+        contents.style.maxHeight = (h > 0 ? h + "px" : "2000px");
+      });
+    }
+  }
+
+  populateEpisodeSelector(episodesArr);
+  // ensure Expand/Collapse All controls exist (dynamically create if missing)
+  ensureExpandCollapseControls();
+  // handle permalink if present
   handlePermalinkOnLoad();
 }
 
 /* ============================
-   Episode selector & Jump
+   Episode selector & Jump (ensure expand before scroll)
    ============================ */
-
 function populateEpisodeSelector(episodes) {
   const sel = document.getElementById("episode-selector");
   if (!sel) return;
@@ -410,47 +593,67 @@ function populateEpisodeSelector(episodes) {
     const val = sel.value;
     if (!val) return;
     const anchor = `episode-${val}`;
-    // set hash for shareability
-    location.hash = `#${anchor}`;
-    const target = document.getElementById(anchor);
-    if (!target) return;
-    const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
-    window.scrollTo({ top, behavior: "smooth" });
+    // expand episode first
+    toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, Number(val), true);
+    // set hash and scroll a fraction later
+    history.replaceState(null, "", `#${anchor}`);
+    setTimeout(() => {
+      const target = document.getElementById(anchor);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: "smooth" });
+    }, 90);
   };
 }
 
 /* ============================
    Permalink handling on load
    ============================ */
-
 function handlePermalinkOnLoad() {
-  // Prefer hash (#episode-3), fallback to query param ?episode=3
-  const h = location.hash;
-  if (h && h.startsWith("#episode-")) {
-    const anchor = h.substring(1);
-    const target = document.getElementById(anchor);
-    if (target) {
+  // first parse hash anchor and merged params
+  const { anchor, params } = parseHashAnchorAndParams();
+
+  // helper to expand or not, and then scroll
+  const expandAndScroll = (episodeNum, shouldExpand) => {
+    // make sure the right run is set in CURRENT_RUN_ID before using toggle function
+    toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, episodeNum, Boolean(shouldExpand));
+    setTimeout(() => {
+      const target = document.getElementById(`episode-${episodeNum}`);
+      if (!target) return;
       const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
+    }, 120);
+  };
+
+  // If hash anchor exists and looks like "episode-<n>"
+  if (anchor && anchor.startsWith("episode-")) {
+    const m = /^episode-(\d+)$/.exec(anchor);
+    if (m) {
+      const ep = Number(m[1]);
+      const spoilerParam = params.get("spoiler");
+      // spoiler=0 means keep collapsed / safe; anything else or null => expand
+      const shouldExpand = (spoilerParam === "0") ? false : true;
+      expandAndScroll(ep, shouldExpand);
       return;
     }
   }
-  const params = new URLSearchParams(location.search);
-  const epi = params.get("episode");
+
+  // fallback: check query string ?episode=#
+  const q = new URLSearchParams(window.location.search || "");
+  const epi = q.get("episode");
+  const spoilerQ = q.get("spoiler");
   if (epi) {
-    const anchor = `episode-${epi}`;
-    const target = document.getElementById(anchor);
-    if (target) {
-      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
+    const ep = Number(epi);
+    if (!Number.isNaN(ep)) {
+      const shouldExpand = (spoilerQ === "0") ? false : true;
+      expandAndScroll(ep, shouldExpand);
     }
   }
 }
 
 /* ============================
-   Run details / meta rendering
+   Run details meta population
    ============================ */
-
 function populateRunDetails(meta) {
   const container = document.getElementById("run-details");
   if (!container) return;
@@ -488,7 +691,7 @@ function populateRunDetails(meta) {
   if (rivalSpriteUrl) rivalSpriteEl.src = rivalSpriteUrl;
   attachPlaceholderOnErrorOrNull(rivalSpriteEl, meta.rival?.species, rivalSpriteUrl);
 
-  // show run-ended top badge if meta.ended present
+  // run-ended top badge
   if (meta.ended) {
     const existing = container.querySelector(".run-ended-top");
     const text = `Run ended: Episode ${meta.ended.episode}` + (meta.ended.date ? ` • ${meta.ended.date}` : "") + (meta.ended.note ? ` — ${meta.ended.note}` : "");
@@ -500,12 +703,11 @@ function populateRunDetails(meta) {
       container.appendChild(el);
     }
   } else {
-    // remove any existing run-ended-top if meta changed
     const existing = container.querySelector(".run-ended-top");
     if (existing) existing.remove();
   }
 
-  // optionally add run-specific rules note
+  // run-specific rules note (optional)
   if (meta.rules && Array.isArray(meta.rules) && meta.rules.length) {
     const rulesPanel = document.getElementById("rules-panel");
     if (rulesPanel) {
@@ -525,53 +727,84 @@ function populateRunDetails(meta) {
 }
 
 /* ============================
-   Rules panel toggle
+   Rules panel toggle & Back-to-top
    ============================ */
-
 function initRulesToggle() {
   const toggle = document.getElementById("rules-toggle");
   const panel = document.getElementById("rules-panel");
   const closeBtn = document.getElementById("rules-close");
   if (!toggle || !panel) return;
-
-  function openPanel() {
-    panel.hidden = false;
-    toggle.setAttribute("aria-expanded", "true");
-  }
-  function closePanel() {
-    panel.hidden = true;
-    toggle.setAttribute("aria-expanded", "false");
-  }
-  toggle.addEventListener("click", () => {
-    if (panel.hidden) openPanel(); else closePanel();
-  });
+  function openPanel() { panel.hidden = false; toggle.setAttribute("aria-expanded", "true"); }
+  function closePanel() { panel.hidden = true; toggle.setAttribute("aria-expanded", "false"); }
+  toggle.addEventListener("click", () => { if (panel.hidden) openPanel(); else closePanel(); });
   closeBtn?.addEventListener("click", closePanel);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePanel(); });
   document.addEventListener("click", (e) => {
     if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target)) closePanel();
   });
 }
-
-/* ============================
-   Back to top button
-   ============================ */
-
 function initBackToTop() {
   const btn = document.getElementById("back-to-top");
   if (!btn) return;
-  function check() {
-    btn.style.display = (window.scrollY > 480) ? "flex" : "none";
-  }
+  function check() { btn.style.display = (window.scrollY > 480) ? "flex" : "none"; }
   window.addEventListener("scroll", check);
   btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   check();
 }
 
 /* ============================
-   Load + display run (filter/search)
+   Expand/Collapse all control insertion
    ============================ */
+function ensureExpandCollapseControls() {
+  // find controls container in your page (the one containing run-selector etc.)
+  const controlsSection = document.querySelector(".controls") || document.querySelector("section.controls");
+  if (!controlsSection) return;
 
+  // create container for the new buttons (right-aligned)
+  let extras = document.getElementById("expand-collapse-controls");
+  if (!extras) {
+    extras = document.createElement("div");
+    extras.id = "expand-collapse-controls";
+    extras.style.display = "flex";
+    extras.style.gap = "8px";
+    extras.style.marginLeft = "8px";
+    // append to controlsSection (it will appear after existing controls)
+    controlsSection.appendChild(extras);
+  } else {
+    extras.innerHTML = ""; // refresh
+  }
+
+  // Expand All button
+  const expandAll = document.createElement("button");
+  expandAll.id = "expand-all";
+  expandAll.textContent = "Expand all";
+  expandAll.title = "Expand all episodes";
+  expandAll.className = "small-control";
+  expandAll.addEventListener("click", () => {
+    setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, false);
+  });
+
+  // Collapse All button
+  const collapseAll = document.createElement("button");
+  collapseAll.id = "collapse-all";
+  collapseAll.textContent = "Collapse all";
+  collapseAll.title = "Collapse all episodes";
+  collapseAll.className = "small-control";
+  collapseAll.addEventListener("click", () => {
+    setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, true);
+  });
+
+  extras.appendChild(expandAll);
+  extras.appendChild(collapseAll);
+}
+
+/* ============================
+   Load and display run (w/ filtering)
+   ============================ */
 async function loadAndDisplayRun(runId) {
+  if (!runId) runId = DEFAULT_RUN_ID;
+  CURRENT_RUN_ID = runId;
+
   const allEvents = await fetchRunEvents(runId);
   const filterType = document.getElementById("filter-type")?.value || "all";
   const q = (document.getElementById("search")?.value || "").trim().toLowerCase();
@@ -593,15 +826,13 @@ async function loadAndDisplayRun(runId) {
   }
 
   renderTimeline(events);
-
   const meta = await fetchRunMeta(runId);
   populateRunDetails(meta);
 }
 
 /* ============================
-   Startup wiring
+   Startup wiring (init)
    ============================ */
-
 async function init() {
   initRulesToggle();
   initBackToTop();
@@ -611,7 +842,6 @@ async function init() {
 
   const runSel = document.getElementById("run-selector");
   runSel?.addEventListener("change", () => {
-    // when user switches run, update URL query param for shareability
     const runId = runSel.value;
     const url = new URL(location);
     url.searchParams.set("run", runId);
@@ -622,15 +852,15 @@ async function init() {
   document.getElementById("filter-type")?.addEventListener("change", () => loadAndDisplayRun(runSel.value));
   document.getElementById("search")?.addEventListener("input", () => loadAndDisplayRun(runSel.value));
 
-  // choose initial run: ?run=run-02 or first in index
+  // choose initial run: ?run=run-X OR DEFAULT_RUN_ID OR first in index
   const params = new URLSearchParams(location.search);
   const runParam = params.get("run");
-  const initial = (runParam && runs.find(r => r.id === runParam)?.id) || runs[0]?.id || DEFAULT_RUN_ID;
+  const initial = (runParam && runs.find(r => r.id === runParam)?.id) || DEFAULT_RUN_ID || runs[0]?.id || DEFAULT_RUN_ID;
   if (runSel) runSel.value = initial;
   await loadAndDisplayRun(initial);
 }
 
 /* ============================
-   Run the init on DOMContentLoaded
+   Start
    ============================ */
 document.addEventListener("DOMContentLoaded", init);

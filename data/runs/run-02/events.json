@@ -30,5 +30,37 @@
     "notes": "First encounter, has the ability 'Flash Fire'",
     "video": { "url": "https://youtu.be/iBEVeJe0Ims?t=2626" },
     "side": "left"
+  },
+  {
+    "id": "e003",
+    "type": "caught",
+    "episode": 3,
+    "timestamp": "00:12:57",
+    "date": "2025-09-03",
+    "pokemon": {
+      "species": "Trevenant",
+      "nickname": "Pong Lenis",
+      "level": 10
+    },
+    "location": "Icicle Cave 4F",
+    "notes": "The people have spoken, and Pong Lenis has arrived! Has the ability 'Quick Draw'",
+    "video": { "url": "https://youtu.be/nHrkugN9wRk?t=777" },
+    "side": "left"
+  },
+  {
+    "id": "e004",
+    "type": "caught",
+    "episode": 3,
+    "timestamp": "00:29:22",
+    "date": "2025-09-03",
+    "pokemon": {
+      "species": "Salazzle",
+      "nickname": "Karina",
+      "level": 10
+    },
+    "location": "Icicle Cave 3F",
+    "notes": "Has the ability 'Speed Boost'",
+    "video": { "url": "https://youtu.be/nHrkugN9wRk?t=1762" },
+    "side": "left"
   }
 ]
