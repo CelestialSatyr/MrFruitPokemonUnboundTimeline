@@ -7,6 +7,7 @@
     "date": "2025-09-02",
     "pokemon": {
       "species": "Pyroar",
+      "gender": "F",
       "nickname": "MsTopHats",
       "level": 10
     },
@@ -23,6 +24,7 @@
     "date": "2025-09-02",
     "pokemon": {
       "species": "Loudred",
+      "gender": "F",
       "nickname": "Cap32k",
       "level": 9
     },
@@ -39,6 +41,7 @@
     "date": "2025-09-03",
     "pokemon": {
       "species": "Trevenant",
+      "gender": "M",
       "nickname": "Pong Lenis",
       "level": 10
     },
@@ -58,6 +61,7 @@
     "date": "2025-09-03",
     "pokemon": {
       "species": "Salazzle",
+      "gender": "F",
       "nickname": "Karina",
       "level": 10
     },
@@ -74,6 +78,7 @@
     "date": "2025-09-04",
     "pokemon": {
       "species": "Muk",
+      "gender": "F",
       "nickname": "mikealtur",
       "level": 10
     },
@@ -90,6 +95,7 @@
     "date": "2025-09-04",
     "pokemon": {
       "species": "Vivillon",
+      "gender": "M",
       "nickname": "Dakota",
       "level": 9
     },
@@ -106,6 +112,7 @@
     "date": "2025-09-04",
     "pokemon": {
       "species": "Sawsbuck",
+      "gender": "M",
       "nickname": "Freyja",
       "level": 10
     },
@@ -122,6 +129,7 @@
     "date": "2025-09-04",
     "pokemon": {
       "species": "Hakamo-o",
+      "gender": "F",
       "nickname": "Celestial",
       "level": 10
     },

@@ -7,6 +7,7 @@
     "date": "2025-09-01",
     "pokemon": {
       "species": "Flygon",
+      "gender": "F",
       "nickname": "Neo",
       "level": 10
     },
@@ -23,6 +24,7 @@
     "date": "2025-09-01",
     "pokemon": {
       "species": "Toxicroak",
+      "gender": "F",
       "nickname": "Jaq Mioff",
       "level": 7
     },
@@ -39,6 +41,7 @@
     "date": "2025-09-02",
     "pokemon": {
       "species": "Vanillite",
+      "gender": "F",
       "nickname": "Ayenay",
       "level": 9
     },

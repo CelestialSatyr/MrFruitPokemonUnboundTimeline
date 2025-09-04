@@ -447,3 +447,21 @@ header{
   .small-control { font-size: 0.92rem; padding: 8px 10px; }
   .episode-banner .permalink { font-size: 1rem; padding: 6px; }
 }
+
+.gender-icon {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.98rem;
+  margin-right: 6px;
+  line-height: 0.9;
+  vertical-align: text-bottom;
+
+  -webkit-text-stroke: 1px currentColor; /* outline to thicken */
+}
+
+/* color variants */
+.gender-icon.male { color: #2b6cf6; }    /* blue-ish */
+.gender-icon.female { color: #e84a9b; }  /* pink-ish */
+
+/* small accessibility tweak: keep icon keyboard-focus neutral */
+.gender-icon[title] { cursor: default; }

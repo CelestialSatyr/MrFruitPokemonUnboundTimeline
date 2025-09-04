@@ -1,7 +1,3 @@
-// script.js - full replacement
-// Timeline companion script: loads runs, renders collapsible episodes, events, permalinks,
-// special ribbon handling (data-ribbon on header), expand/collapse controls, search/jump, etc.
-
 /* ============================
    Configuration
    ============================ */
@@ -170,10 +166,10 @@ function createEventElement(ev) {
   const visual = document.createElement("div");
   visual.className = "visual";
 
-  // Visual content
+  // Visual content (sprite / badge / evolution preview)
   if (type === "evolved" || type === "evolution") {
     const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || ev.pokemon?.species || "";
-    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
+    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || ev.pokemon?.species || "";
     const leftImg = document.createElement("img");
     leftImg.className = "sprite";
     leftImg.alt = fromName || "before";
@@ -219,30 +215,85 @@ function createEventElement(ev) {
     visual.appendChild(spriteImg);
   }
 
+  // Helper: create a DocumentFragment that contains a gender icon (if present)
+  // followed by the species text. This ensures the icon sits directly BEFORE the species name.
+  function makeSpeciesFragment(speciesText, genderRaw) {
+    const frag = document.createDocumentFragment();
+    if (speciesText == null) speciesText = "";
+
+    // Normalize gender: accept 'f', 'female', 'm', 'male' (case-insensitive)
+    const g = (typeof genderRaw === "string") ? genderRaw.trim().toLowerCase() : "";
+    const isFemale = (g === "f" || g === "female");
+    const isMale = (g === "m" || g === "male");
+
+    if (isFemale || isMale) {
+      const icon = document.createElement("span");
+      icon.className = "gender-icon " + (isFemale ? "female" : "male");
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = isFemale ? "♀" : "♂";
+      // tooltip for hover and keyboard users
+      icon.title = isFemale ? "Female" : "Male";
+      frag.appendChild(icon);
+      frag.appendChild(document.createTextNode(" ")); // small space after icon
+    }
+
+    frag.appendChild(document.createTextNode(speciesText));
+    return frag;
+  }
+
   // Text column
   const text = document.createElement("div");
   text.className = "item-body";
 
   const speciesNick = document.createElement("div");
   speciesNick.className = "species-nick";
+
+  // Build species/nickname display:
   if (type === "evolved" || type === "evolution") {
     const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || ev.pokemon?.species || "";
-    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
+    const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || ev.pokemon?.species || "";
     const nick = ev.pokemon?.nickname || ev.nickname;
+
     if (fromName && toName) {
-      speciesNick.textContent = nick ? `${fromName} → ${toName} • Named after ${nick}` : `${fromName} → ${toName}`;
+      // Compose: [fromName] → [gender? + toName] [• Named after nick]
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createTextNode(fromName));
+      frag.appendChild(document.createTextNode(" → "));
+      // For evolution, gender usually applies to the current pokemon (the 'to' side).
+      frag.appendChild(makeSpeciesFragment(toName, ev.pokemon?.gender));
+      if (nick) {
+        frag.appendChild(document.createTextNode(" • Named after " + nick));
+      }
+      speciesNick.appendChild(frag);
+
     } else {
-      speciesNick.textContent = ev.pokemon?.species ? (ev.pokemon?.nickname ? `${ev.pokemon.species} • Named after ${ev.pokemon.nickname}` : ev.pokemon.species) : "";
+      // fallback: show species + nickname if we have it
+      if (ev.pokemon?.species) {
+        const frag = makeSpeciesFragment(ev.pokemon.species, ev.pokemon?.gender);
+        speciesNick.appendChild(frag);
+        if (ev.pokemon?.nickname) speciesNick.appendChild(document.createTextNode(" • Named after " + ev.pokemon.nickname));
+      } else {
+        speciesNick.textContent = "";
+      }
     }
+
   } else {
+    // non-evolution events: display gender icon BEFORE species
     const species = ev.pokemon?.species || ev.species || "";
     const nickname = ev.pokemon?.nickname;
-    if (species && nickname) speciesNick.textContent = `${species} → Named after ${nickname}`;
-    else if (species) speciesNick.textContent = species;
-    else speciesNick.textContent = "";
-  }
-  if (speciesNick.textContent) text.appendChild(speciesNick);
 
+    if (species) {
+      const frag = makeSpeciesFragment(species, ev.pokemon?.gender);
+      speciesNick.appendChild(frag);
+      if (nickname) speciesNick.appendChild(document.createTextNode(" → Named after " + nickname));
+    } else {
+      speciesNick.textContent = "";
+    }
+  }
+
+  if (speciesNick.textContent || speciesNick.childNodes.length) text.appendChild(speciesNick);
+
+  // Obtained / died / location + timecode link
   const obtainedLine = document.createElement("div");
   obtainedLine.className = "obtained-line";
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
