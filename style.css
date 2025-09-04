@@ -34,14 +34,14 @@ header{
   gap:12px;
   max-width: var(--container-max);
   margin:0 auto;
-  width: 100%;
+  width:100%;
 }
 .header-left h1 { margin:0; font-size:1.1rem; }
-.header-left .sub { margin:4px 0 0; font-size:0.85rem; opacity:0.95; }
+.header-left .sub { margin:4px 0 0; font-size:0.85rem; opacity:0.95;}
 .btn{ border:0; background:transparent; color:var(--text); cursor:pointer; font-weight:600; padding:6px 8px; border-radius:6px; }
-.btn.small{ font-size:0.86rem; padding:4px 6px; color:var(--text); }
+.btn.small{ font-size:0.86rem; padding:4px 6px; }
 
-/* Rules panel (dropdown under header) */
+/* Rules panel */
 .rules-panel{
   max-width: var(--container-max);
   margin:8px auto 0;
@@ -53,11 +53,9 @@ header{
   position:relative;
   z-index:20;
 }
-.rules-header{ display:flex; justify-content:space-between; align-items:center; color:var(--text); margin-bottom:8px; }
-.rules-list{ margin:6px 0 8px 20px; }
-.rules-note{ font-size:0.9rem; color:var(--text); }
+.rules-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
 
-/* Main container (responsive - no forcing min-width) */
+/* Main container */
 .container{
   width: min(94vw, var(--container-max));
   max-width: var(--container-max);
@@ -69,11 +67,10 @@ header{
 .run-details{
   display:flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  width: 100%;
-  box-sizing: border-box;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  width:100%;
   background: radial-gradient(circle at center, var(--primary), var(--secondary));
   border-radius:12px;
   padding:12px;
@@ -81,99 +78,38 @@ header{
   margin-bottom:14px;
   position:relative;
   z-index:3;
-  flex-wrap: wrap; /* allow wrapping on small screens */
+  flex-wrap: wrap;
 }
 
-/* left and right columns */
-.run-left {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex: 1 1 60%;   /* grow and take available room */
-  min-width: 0;    /* critical to allow shrinking */
-  justify-content: flex-start;
-}
+/* Left column expands; right column hugs content */
+.run-left { display:flex; align-items:center; gap:12px; flex:1 1 60%; min-width:0; justify-content:flex-start; }
+.run-right { display:flex; align-items:center; gap:12px; flex:0 0 auto; min-width:0; justify-content:flex-end; }
 
-.run-right {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex: 0 0 auto;  /* do not take a large percentage — use content width */
-  min-width: 0;     /* allow internal elements to shrink */
-  justify-content: flex-end; /* push internal items to the far right of the run-right block */
-}
+.person-info { display:flex; flex-direction:column; gap:4px; min-width:0; overflow:hidden; }
+.person-info.reverse { align-items:flex-end; text-align:right; }
+@media (max-width:900px) { .person-info.reverse { align-items:flex-start; text-align:left; } }
 
-/* person-info wrapper so text can shrink/wrap as desired */
-.person-info {
-  display:flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0; /* critical */
-  overflow: hidden;
-}
-
-.person-info.reverse {
-  align-items: flex-end;
-  text-align: right;
-}
-
-/* Mobile: stack and make run-right full width and left-aligned */
-@media (max-width: 900px) {
-  .run-details {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .run-left {
-    flex: 1 1 100%;
-    justify-content: flex-start;
-  }
-
-  .run-right {
-    flex: 1 1 100%;
-    justify-content: flex-start; /* left-align on mobile */
-  }
-
-  .person-info.reverse {
-    align-items: flex-start;
-    text-align: left;
-  }
-}
-
-/* player/rival sprite sizing - responsive and constrained */
 .person-sprite{
-  width: clamp(48px, 14vw, 120px); /* responsive size */
-  height: auto;
-  display:block;
-  object-fit: contain;
+  width: clamp(48px,14vw,120px);
+  height:auto;
+  object-fit:contain;
   padding:4px;
-  flex: 0 0 auto;
-  border-radius: 6px;
+  flex:0 0 auto;
+  border-radius:6px;
 }
-
-/* Names and subs - truncate if necessary */
 .person-name{
   font-weight:700;
-  font-size: clamp(1rem, 2.6vw, 1.6rem);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  font-size: clamp(1rem,2.6vw,1.6rem);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-.person-sub, .rival-sub{
-  font-size: clamp(0.85rem, 1.6vw, 1rem);
-  color: #052423;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Reverse layout on right column text */
-.person-info.reverse { align-items: flex-end; text-align: right; }
-@media (max-width:900px) {
-  .person-info.reverse { align-items: flex-start; text-align: left; }
+.person-sub, .rival-sub {
+  font-size: clamp(0.85rem,1.6vw,1rem);
+  color:#052423;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 /* Controls */
@@ -204,7 +140,7 @@ header{
   cursor:pointer;
 }
 
-/* Timeline base & line (behind everything) */
+/* Timeline & center line */
 .timeline{
   position:relative;
   padding:30px 0;
@@ -223,10 +159,11 @@ header{
   background:var(--secondary);
   border-radius:4px;
   box-shadow:0 0 0 2px rgba(127,199,233,0.06);
-  z-index:1; /* behind banners and events */
+  z-index:1;
 }
 
-/* Episode banner (single definition, used for collapsible header) */
+/* Episode banner */
+.episode-section { margin-bottom:12px; position:relative; z-index:4; }
 .episode-banner{
   clear:both;
   display:flex;
@@ -243,149 +180,95 @@ header{
   font-weight:600;
   box-shadow:0 6px 18px rgba(127,199,233,0.12);
   position:relative;
-  z-index:4; /* above timeline line but below header visuals */
+  z-index:4;
 }
-.episode-banner .permalink {
-  background:transparent;border:0;color:rgba(0,0,0,0.85);cursor:pointer;font-size:0.95rem;padding:6px;border-radius:6px;
+.episode-banner .controls {
+  position: absolute;
+  right: 12px;
+  top: 25%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center; /* keep icons aligned on their own cross axis */
+  height: auto;        /* ensure it doesn’t stretch oddly */
 }
+.episode-banner:focus { outline:3px solid rgba(74,99,214,0.18); outline-offset:2px; }
+@media (max-width:900px) { .episode-banner { justify-content:flex-start; padding-left:18px; } }
 
-/* Event card common */
+/* Event card */
 .event {
-  width: 46%;
-  padding: 12px 14px;
-  position: relative;
-  margin-bottom: 22px;
-  border-radius: 10px;
+  width:46%;
+  padding:12px 14px;
+  position:relative;
+  margin-bottom:22px;
+  border-radius:10px;
   background: var(--muted);
-  box-shadow: 0 6px 18px rgba(16,18,36,0.06);
-  display: block;
-  box-sizing: border-box;
-  z-index: 3; /* above timeline line */
-}
-
-/* left/right floats for side placement */
-.event.left {
-  float: left;
-  clear: both;
-  transform: translateX(20px);
-  margin-right: 4%;
-}
-.event.right {
-  float: right;
-  clear: both;
-  transform: translateX(-20px);
-  margin-left: 4%;
-}
-
-/* Event header */
-.event-header {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  background: var(--secondary);
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--text);
-  line-height: 1.2;
-  position: relative;
-  z-index: 5;
-}
-
-/* Body (visual + text) */
-.event-body {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 3;
-}
-
-/* Visual column (sprite / badge / evolution) */
-.event-body .visual {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Text column */
-.event-body .item-body {
-  flex: 1 1 auto;
-  min-width: 0; /* prevents overflow */
-}
-
-/* Mobile layout adjustments */
-@media (max-width:900px){
-  .container{ width: 94vw; }
-  .event{ width:100%; float:none; transform:none; margin-left:0; margin-right:0; padding:10px; }
-  .timeline::before{ left:20px; transform:none; width:3px; }
-}
-
-/* =========================
-   Collapsible episodes
-   ========================= */
-
-.episode-section { margin-bottom: 12px; position: relative; z-index: 4; }
-
-.episode-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  cursor: pointer;
-  user-select: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 600;
-  position: relative;
   box-shadow:0 6px 18px rgba(16,18,36,0.06);
+  display:block;
+  box-sizing:border-box;
+  z-index:6; /* ensure above episode banner */
 }
 
-/* Chevron rotation */
-.episode-banner .chev { display:inline-block; transition: transform 220ms ease; transform-origin: center; }
-.episode-banner[aria-expanded="true"] .chev { transform: rotate(180deg); }
+/* left/right placement */
+.event.left { float:left; clear:both; transform: translateX(20px); margin-right:4%; }
+.event.right { float:right; clear:both; transform: translateX(-20px); margin-left:4%; }
 
-/* Episode contents */
-.episode-contents {
-  overflow: hidden;
-  transition: max-height 300ms ease, opacity 250ms ease;
-  opacity: 1;
-  max-height: 2000px;
-  margin-top: 12px;
+/* Event header & pseudo-element ribbon (sticking out) */
+.event-header {
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  padding:8px 12px;
+  margin-bottom:8px;
+  background: var(--secondary);
+  border-radius:8px;
+  text-align:center;
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--text);
+  line-height:1.2;
+  position:relative; /* pseudo-element positioned relative to header */
+  z-index:7; /* above event body and timeline line */
 }
-.episode-contents.collapsed { max-height: 0 !important; opacity: 0; margin-top: 0; }
 
-.episode-banner .controls { position: absolute; right: 12px; display:flex; gap:8px; align-items:center; }
-.episode-banner:focus { outline: 3px solid rgba(74,99,214,0.18); outline-offset: 2px; }
-@media (max-width:900px) { .episode-banner { justify-content: flex-start; padding-left: 18px; } }
+/* header ribbon via data attribute (appears slightly above header) */
+.event-header[data-ribbon]::before {
+  content: attr(data-ribbon);
+  position: absolute;
+  left: 8px;
+  top: -12px; /* stick out above header */
+  padding:6px 10px;
+  background: linear-gradient(90deg,#ffd86b,#ffb74d);
+  color: #2b1700;
+  font-weight:800;
+  font-size:0.78rem;
+  border-radius:8px;
+  box-shadow:0 6px 18px rgba(255,170,20,0.08);
+  transform: rotate(-6deg);
+  z-index:9999; /* topmost so it sits above banner */
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+/* Event body */
+.event-body {
+  display:flex;
+  flex-direction:row;
+  gap:12px;
+  align-items:flex-start;
+  width:100%;
+  box-sizing:border-box;
+  position:relative;
+  z-index:6;
+}
+.event-body .visual { flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+.event-body .item-body { flex:1 1 auto; min-width:0; }
 
 /* Sprites & badges */
-.sprite {
-  width: 96px;
-  height: 96px;
-  object-fit: contain;
-  flex-shrink: 0;
-  padding: 6px;
-  border-radius:6px;
-}
-.badge-icon {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  flex-shrink: 0;
-  border-radius:8px;
-  padding:6px;
-}
+.sprite { width:96px; height:96px; object-fit:contain; flex-shrink:0; padding:6px; border-radius:6px; }
+.badge-icon { width:72px; height:72px; object-fit:contain; flex-shrink:0; padding:6px; border-radius:8px; }
 
-/* text blocks */
+/* Text content */
 .item-body { flex:1; min-width:0; }
 .primary-action{ margin:0 0 6px; font-weight:700; font-size:1rem; }
 .species-nick{ margin:0 0 6px; color:#222; font-size:0.98rem; }
@@ -397,30 +280,96 @@ header{
 .evolution-row .sprite{ width:72px; height:72px; }
 .evolve-arrow{ font-size:1.25rem; color:var(--text); margin:0 6px; }
 
+/* Episode contents (collapsible) */
+/* When expanded allow visual overflow so ribbon sticking out isn't clipped */
+.episode-contents {
+  overflow: visible;
+  transition: max-height 300ms ease, opacity 250ms ease;
+  opacity:1;
+  max-height:2000px;
+  margin-top:12px;
+}
+/* When collapsed hide overflow (spoiler-safe) */
+.episode-contents.collapsed {
+  overflow: hidden;
+  max-height:0 !important;
+  opacity:0;
+  margin-top:0;
+}
+
+/* run end banner */
+.run-end-banner {
+  clear:both;
+  display:block;
+  width:100%;
+  text-align:center;
+  margin:22px 0;
+  padding:12px 16px;
+  background: linear-gradient(90deg,#b00000,#ff6b6b);
+  color:white;
+  border-radius:10px;
+  font-weight:800;
+  box-shadow:0 8px 20px rgba(176,0,0,0.12);
+  position:relative;
+  z-index:8;
+}
+
 /* message panel */
 .message{ margin-top:18px; padding:12px 14px; background:#fff7e6; border:1px solid #ffe4b5; border-radius:8px; color:#7a5a00; position:relative; z-index:3; }
 
-/* Back to top */
+/* back to top */
 .back-to-top{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  width:46px;
-  height:46px;
-  border-radius:10px;
-  background:var(--accent);
-  color:var(--text);
-  border:0;
-  cursor:pointer;
-  font-size:20px;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 10px 30px rgba(16,18,36,0.16);
+  position:fixed; right:22px; bottom:22px; width:46px; height:46px; border-radius:10px;
+  background:var(--accent); color:var(--text); border:0; cursor:pointer; font-size:20px;
+  display:none; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(16,18,36,0.16);
   z-index:40;
 }
 
-.small-control{
+/* special / fainted visuals */
+.event.fainted .sprite, .event.fainted .badge-icon { filter: grayscale(100%) contrast(85%); opacity:0.72; }
+.event.fainted .event-header { background: linear-gradient(180deg,#fff0f0,#ffe6e6); color:#7a0011; border:1px solid #ffcccc; }
+.event.fainted { box-shadow: 0 8px 24px rgba(160,16,16,0.04); }
+
+.event.special .visual { position:relative; }
+@media (prefers-reduced-motion: reduce) {
+  .event.special .visual::after { animation:none; opacity:0.9; }
+}
+
+/* mobile adjustments */
+@media (max-width:900px){
+  .container{ width:94vw; }
+  .event{ width:100%; float:none; transform:none; margin-left:0; margin-right:0; padding:10px; }
+  .timeline::before{ left:20px; transform:none; width:3px; }
+  .episode-banner { justify-content:flex-start; padding-left:18px; }
+  .run-left, .run-right { flex: 1 1 100%; justify-content:flex-start; }
+  .person-sprite { width: clamp(56px, 20vw, 96px); }
+}
+
+/* small helpers */
+.hidden { display:none !important; }
+
+
+/* ===============================
+   UI polish: expand/collapse buttons, permalink icon-only, clearfix footer fix
+   =============================== */
+
+/* 1) Make sure floated events don't collapse their container:
+   Put this clearfix on the timeline (so footer and other content flow correctly). */
+.timeline::after {
+  content: "";
+  display: table;   /* creates a new block formatting context for floats */
+  clear: both;
+}
+
+/* Also add a general clearfix for container just in case */
+.container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* 2) Small control buttons (Expand/Collapse) — match the rest of the UI */
+.small-control {
   margin-left:8px;
   padding:6px 10px;
   border-radius:8px;
@@ -430,65 +379,71 @@ header{
   cursor:pointer;
 }
 
-/* footer */
-.footer{
-  clear: both;
-  width: 100%;
-  text-align:center;
-  margin:36px 0 80px;
-  color:var(--text);
-  font-size:1rem;
+/* hover/focus */
+.small-control:hover, .small-control:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(47,54,79,0.10);
+  outline: none;
 }
 
-/* ---------------- Run-ended / fainted visuals ---------------- */
+/* 3) Permalink icon — icon-only button in episode banner */
+.episode-banner .permalink {
+  background: transparent;  /* no box or bordered rectangle */
+  border: 0;
+  padding: 6px;
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.95); /* icon color appropriate for banner */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 140ms ease, transform 120ms ease;
+}
 
-.run-end-banner {
+/* small hover halo so the icon still has affordance */
+.episode-banner .permalink:hover,
+.episode-banner .permalink:focus {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Use a darker icon when banner uses light background (if needed) */
+.episode-banner .permalink[aria-pressed="true"] {
+  color: rgba(0,0,0,0.85);
+}
+
+/* Make .permalink visually minimal when not inside banner (fallback) */
+.permalink { background: transparent; border: 0; padding: 4px; cursor: pointer; }
+
+/* small tooltip-friendly focus ring for accessibility */
+.episode-banner .permalink:focus { box-shadow: 0 0 0 3px rgba(255,200,80,0.14); border-radius:6px; }
+
+/* 4) Ensure expand/collapse injected wrapper looks consistent with existing controls
+   If the expand/collapse wrapper was appended to .controls, it will inherit spacing.
+   Add a small helper for the injected wrapper so spacing matches */
+.controls > div[style] { display:flex; gap:8px; align-items:center; }
+
+/* 5) Footer placement: ensure footer sits below floats
+   Footer already has clear: both; but enforce layout safety */
+.footer {
   clear: both;
-  display: block;
   width: 100%;
   text-align: center;
-  margin: 22px 0;
-  padding: 12px 16px;
-  background: linear-gradient(90deg, #b00000, #ff6b6b);
-  color: white;
-  border-radius: 10px;
-  font-weight: 800;
-  box-shadow: 0 8px 20px rgba(176, 0, 0, 0.12);
-  position: relative;
-  z-index: 6;
+  margin: 36px auto 12px;
+  padding: 12px 20px;
+  color: var(--text);
+  font-size: 1rem;
+  align-self: center;
+  position: relative;  /* keep it in normal flow */
+  z-index: 2;
 }
 
-.run-ended-top {
-  margin-top: 8px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: linear-gradient(90deg,#fff5f5,#fff0f0);
-  color: #8a0000;
-  font-weight:700;
-  border:1px solid #ffd6d6;
+/* 6) Final: small responsive tweak so controls don't overflow on small screens */
+@media (max-width: 640px) {
+  .small-control { font-size: 0.92rem; padding: 8px 10px; }
+  .episode-banner .permalink { font-size: 1rem; padding: 6px; }
 }
-
-/* Fainted event visuals */
-.event.fainted .sprite,
-.event.fainted .badge-icon {
-  filter: grayscale(100%) contrast(85%);
-  opacity: 0.72;
-}
-.event.fainted .event-header {
-  background: linear-gradient(180deg,#fff0f0,#ffe6e6);
-  color: #7a0011;
-  border: 1px solid #ffcccc;
-}
-.event.fainted { box-shadow: 0 8px 24px rgba(160, 16, 16, 0.04); }
-
-/* Ensure banners and events are above the line */
-.episode-banner, .run-end-banner { position: relative; z-index: 5; }
-.event { position: relative; z-index: 3; }
-
-/* mobile tidy fainted appearance */
-@media (max-width: 900px) {
-  .event.fainted .sprite { opacity:0.78; }
-}
-
-/* small helpers */
-.hidden { display:none !important; }

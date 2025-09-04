@@ -44,6 +44,9 @@
     },
     "location": "Icicle Cave 4F",
     "notes": "The people have spoken, and Pong Lenis has arrived! Has the ability 'Quick Draw'",
+    "special": {
+    "label": "The people have spoken!"
+    },
     "video": { "url": "https://youtu.be/nHrkugN9wRk?t=777" },
     "side": "left"
   },
@@ -61,6 +64,73 @@
     "location": "Icicle Cave 3F",
     "notes": "Has the ability 'Speed Boost'",
     "video": { "url": "https://youtu.be/nHrkugN9wRk?t=1762" },
+    "side": "left"
+  },
+  {
+    "id": "e005",
+    "type": "caught",
+    "episode": 4,
+    "timestamp": "00:02:54",
+    "date": "2025-09-04",
+    "pokemon": {
+      "species": "Muk",
+      "nickname": "mikealtur",
+      "level": 10
+    },
+    "location": "Gift Pokemon - Bellin Town",
+    "notes": "Has the ability 'Sticky Hold', how thematic!",
+    "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=174" },
+    "side": "left"
+  },
+  {
+    "id": "e006",
+    "type": "caught",
+    "episode": 4,
+    "timestamp": "00:16:49",
+    "date": "2025-09-04",
+    "pokemon": {
+      "species": "Vivillon",
+      "nickname": "Dakota",
+      "level": 9
+    },
+    "location": "Icicle Cave 2F",
+    "notes": "Has the ability 'Motor Drive'",
+    "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=1009" },
+    "side": "left"
+  },
+  {
+    "id": "e007",
+    "type": "caught",
+    "episode": 4,
+    "timestamp": "00:32:59",
+    "date": "2025-09-04",
+    "pokemon": {
+      "species": "Sawsbuck",
+      "nickname": "Freyja",
+      "level": 10
+    },
+    "location": "Icicle Cave 1F",
+    "notes": "Has the ability 'Speed Boost'",
+    "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=1979" },
+    "side": "left"
+  },
+  {
+    "id": "e008",
+    "type": "caught",
+    "episode": 4,
+    "timestamp": "00:40:46",
+    "date": "2025-09-04",
+    "pokemon": {
+      "species": "Hakamo-o",
+      "nickname": "Celestial",
+      "level": 10
+    },
+    "location": "Route 2",
+    "notes": "It's me, haven't prayed so hard for a pokemon to be caught, ever! Has the ability 'Rough Skin'",
+    "special": {
+    "label": "Named after me!"
+    },
+    "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=2446" },
     "side": "left"
   }
 ]

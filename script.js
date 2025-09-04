@@ -1,3 +1,7 @@
+// script.js - full replacement
+// Timeline companion script: loads runs, renders collapsible episodes, events, permalinks,
+// special ribbon handling (data-ribbon on header), expand/collapse controls, search/jump, etc.
+
 /* ============================
    Configuration
    ============================ */
@@ -5,55 +9,43 @@ const RUN_INDEX_PATH = "data/runs/index.json";
 const RUNS_BASE_PATH = "data/runs/";
 const SPRITES_PATH = "sprites/";
 const BADGES_PATH = `${SPRITES_PATH}badges/`;
-const DEFAULT_RUN_ID = "run-02"; // fallback run id if none selected
-const SCROLL_OFFSET = 110; // offset for anchored scrolling (adjust for header height)
+const DEFAULT_RUN_ID = "run-02";
+const SCROLL_OFFSET = 110; // adjust if header height changes
 
 /* ============================
-   Global runtime state
+   State
    ============================ */
 let CURRENT_RUN_ID = null;
-const COLLAPSED_KEY_PREFIX = "nuz_timeline_collapsed:"; // localStorage prefix
+const COLLAPSED_KEY_PREFIX = "nuz_timeline_collapsed:";
 
 /* ============================
-   Small helpers
+   Helpers
    ============================ */
-function speciesToFilename(name) {
-  if (!name) return null;
-  return String(name)
-    .toLowerCase()
-    .trim()
-    .replace(/['’]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9\-]/g, "");
-}
-
-function spriteUrlFor(species) {
-  const filename = speciesToFilename(species);
-  if (!filename) return null;
-  return `${SPRITES_PATH}${filename}.png`;
-}
-
-function badgeUrlFor(name) {
-  const filename = speciesToFilename(name);
-  if (!filename) return null;
-  return `${BADGES_PATH}${filename}.png`;
-}
-
 function capitalize(s) {
   if (s === null || s === undefined) return "";
   s = String(s);
   return s.length ? s.charAt(0).toUpperCase() + s.slice(1) : "";
 }
 
+function speciesToFilename(name) {
+  if (!name) return null;
+  return String(name).toLowerCase().trim().replace(/['’]/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+}
+function spriteUrlFor(species) {
+  const filename = speciesToFilename(species);
+  if (!filename) return null;
+  return `${SPRITES_PATH}${filename}.png`;
+}
+function badgeUrlFor(name) {
+  const filename = speciesToFilename(name);
+  if (!filename) return null;
+  return `${BADGES_PATH}${filename}.png`;
+}
 function setSvgPlaceholder(imgEl, label) {
   const short = (label || "").slice(0, 3).toUpperCase();
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'>
-    <rect width='100%' height='100%' fill='#f3f4ff'/>
-    <text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${short}</text>
-  </svg>`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='100%' height='100%' fill='#f3f4ff'/><text x='50%' y='50%' font-size='28' text-anchor='middle' fill='#6b6b7a' dy='.35em' font-family='Arial,Helvetica,sans-serif'>${short}</text></svg>`;
   imgEl.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
-
 function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
   if (!imgEl) return;
   if (!url) {
@@ -66,6 +58,7 @@ function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
   };
 }
 
+/* fetch helper */
 async function fetchJson(path) {
   try {
     const res = await fetch(path);
@@ -80,31 +73,8 @@ async function fetchJson(path) {
   }
 }
 
-/**
- * Parse location.hash and location.search and return:
- * { anchor: "episode-12" | null, params: URLSearchParams }
- * - supports hashes like "#episode-12?spoiler=0"
- * - merges any query params in location.search with the hash params (hash params win)
- */
-function parseHashAnchorAndParams() {
-  const params = new URLSearchParams(window.location.search || "");
-  const rawHash = (window.location.hash || "").replace(/^#/, ""); // remove leading '#'
-  if (!rawHash) return { anchor: null, params };
-
-  const qIdx = rawHash.indexOf("?");
-  let anchor = rawHash;
-  if (qIdx !== -1) {
-    anchor = rawHash.substring(0, qIdx);
-    const hashQuery = rawHash.substring(qIdx + 1);
-    const hashParams = new URLSearchParams(hashQuery);
-    // merge hashParams into params (hash params override search params)
-    for (const [k, v] of hashParams.entries()) params.set(k, v);
-  }
-  return { anchor, params };
-}
-
 /* ============================
-   LocalStorage: collapsed episodes per-run
+   Collapsed localStorage map
    ============================ */
 function loadCollapsedMap(runId) {
   try {
@@ -135,7 +105,7 @@ function clearCollapsedMap(runId) {
 }
 
 /* ============================
-   Runs list
+   Runs list & fetching run files
    ============================ */
 async function loadRunsList() {
   const idx = await fetchJson(RUN_INDEX_PATH);
@@ -155,10 +125,6 @@ function populateRunSelector(runs) {
     sel.appendChild(opt);
   }
 }
-
-/* ============================
-   Fetch run files
-   ============================ */
 async function fetchRunEvents(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/events.json`;
   const data = await fetchJson(path);
@@ -166,11 +132,7 @@ async function fetchRunEvents(runId) {
     console.warn("No events found for", runId, path);
     return [];
   }
-  if (!Array.isArray(data)) {
-    console.warn("events.json is not an array:", path);
-    return [];
-  }
-  return data;
+  return Array.isArray(data) ? data : [];
 }
 async function fetchRunMeta(runId) {
   const path = `${RUNS_BASE_PATH}${runId}/meta.json`;
@@ -179,46 +141,39 @@ async function fetchRunMeta(runId) {
 }
 
 /* ============================
-   Event element builder
+   Create DOM for an event
    ============================ */
 function createEventElement(ev) {
   const wrapper = document.createElement("article");
-  const side = (ev.side === "right") ? "right" : "left";
-  wrapper.className = `event ${side}`;
+  wrapper.className = "event " + ((ev.side === "right") ? "right" : "left");
+  if (ev.id) wrapper.dataset.id = ev.id;
 
   const type = (ev.type || "").toLowerCase();
   if (type) wrapper.classList.add(`type-${type}`);
   if (type === "fainted") wrapper.classList.add("fainted");
 
-  // Header (top)
+  // Header
   const header = document.createElement("div");
   header.className = "event-header";
   const level = ev.pokemon?.level ?? ev.level;
-  if (type === "caught") {
-    header.textContent = level ? `Caught at Level ${level}` : "Caught";
-  } else if (type === "fainted") {
-    header.textContent = "Fainted";
-  } else if (type === "evolved" || type === "evolution") {
-    header.textContent = level ? `Evolved at Level ${level}` : "Evolved";
-  } else if (type === "badge") {
-    header.textContent = "Badge earned";
-  } else {
-    header.textContent = (ev.type ? capitalize(ev.type) : "Event");
-  }
+  if (type === "caught") header.textContent = level ? `Caught at Level ${level}` : "Caught";
+  else if (type === "fainted") header.textContent = "Fainted";
+  else if (type === "evolved" || type === "evolution") header.textContent = level ? `Evolved at Level ${level}` : "Evolved";
+  else if (type === "badge") header.textContent = "Badge earned";
+  else header.textContent = ev.type ? capitalize(ev.type) : "Event";
   wrapper.appendChild(header);
 
-  // Body (visual + text)
-  const bodyWrapper = document.createElement("div");
-  bodyWrapper.className = "event-body";
+  // Body
+  const body = document.createElement("div");
+  body.className = "event-body";
 
   const visual = document.createElement("div");
   visual.className = "visual";
 
   // Visual content
   if (type === "evolved" || type === "evolution") {
-    const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || "";
+    const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || ev.pokemon?.species || "";
     const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
-
     const leftImg = document.createElement("img");
     leftImg.className = "sprite";
     leftImg.alt = fromName || "before";
@@ -254,7 +209,7 @@ function createEventElement(ev) {
     visual.appendChild(badgeImg);
 
   } else {
-    const speciesName = ev.pokemon?.species || ev.species || ev.speciesName || "";
+    const speciesName = ev.pokemon?.species || ev.species || "";
     const spriteImg = document.createElement("img");
     spriteImg.className = "sprite";
     spriteImg.alt = speciesName || "pokemon";
@@ -264,15 +219,14 @@ function createEventElement(ev) {
     visual.appendChild(spriteImg);
   }
 
-  // Text section
+  // Text column
   const text = document.createElement("div");
   text.className = "item-body";
 
-  // species + nickname or evolution text
   const speciesNick = document.createElement("div");
   speciesNick.className = "species-nick";
   if (type === "evolved" || type === "evolution") {
-    const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || "";
+    const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || ev.pokemon?.species || "";
     const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || "";
     const nick = ev.pokemon?.nickname || ev.nickname;
     if (fromName && toName) {
@@ -289,11 +243,9 @@ function createEventElement(ev) {
   }
   if (speciesNick.textContent) text.appendChild(speciesNick);
 
-  // Obtained / Died / timecode
   const obtainedLine = document.createElement("div");
   obtainedLine.className = "obtained-line";
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
-  // label depends on event type
   let locLabel = "Obtained via:";
   if (type === "fainted") locLabel = "Died at:";
   else if (type === "end") locLabel = "Final location:";
@@ -311,7 +263,6 @@ function createEventElement(ev) {
   }
   if (obtainedLine.textContent || obtainedLine.children.length) text.appendChild(obtainedLine);
 
-  // notes
   if (ev.notes) {
     const notes = document.createElement("div");
     notes.className = "item-notes";
@@ -319,15 +270,48 @@ function createEventElement(ev) {
     text.appendChild(notes);
   }
 
-  // assemble body
-  bodyWrapper.appendChild(visual);
-  bodyWrapper.appendChild(text);
-  wrapper.appendChild(bodyWrapper);
+  body.appendChild(visual);
+  body.appendChild(text);
+  wrapper.appendChild(body);
   return wrapper;
 }
 
 /* ============================
-   Episode section toggle helpers
+   markSpecialEvent - ribbon placed on header (data-ribbon)
+   simple: sets .special class and header data-ribbon; no floating DOMs
+   ============================ */
+function markSpecialEvent(ev, el, opts = {}) {
+  if (!ev || !el) return;
+  const highlightName = opts.highlightName || "Luc";
+
+  // Determine label
+  let specialLabel = null;
+  if (typeof ev.special === "string") specialLabel = ev.special;
+  else if (typeof ev.special === "object" && ev.special !== null) {
+    if (ev.special.label) specialLabel = ev.special.label;
+  } else if (ev.special === true) {
+    specialLabel = ev.pokemon?.nickname || `Named after ${highlightName}`;
+  } else {
+    return;
+  }
+  if (!specialLabel) specialLabel = ev.pokemon?.nickname || `Named after ${highlightName}`;
+
+  // Add class
+  el.classList.add("special");
+
+  // Put ribbon text on the header element via data-ribbon
+  const headerEl = el.querySelector(".event-header");
+  if (headerEl) {
+    headerEl.setAttribute("data-ribbon", specialLabel);
+    headerEl.style.position = headerEl.style.position || "relative";
+  }
+
+  // Accessibility: a short aria label
+  el.setAttribute("aria-label", `${specialLabel} — special event`);
+}
+
+/* ============================
+   Episode expand/collapse helpers
    ============================ */
 function toggleEpisodeSection(runId, episode, expand) {
   const section = document.querySelector(`.episode-section[data-episode="${episode}"]`);
@@ -339,39 +323,39 @@ function toggleEpisodeSection(runId, episode, expand) {
   const isExpanded = banner.getAttribute("aria-expanded") === "true";
   let willExpand = (typeof expand === "boolean") ? expand : !isExpanded;
 
-  // update attributes/classes
   banner.setAttribute("aria-expanded", willExpand ? "true" : "false");
   if (willExpand) {
     contents.classList.remove("collapsed");
     contents.setAttribute("aria-hidden", "false");
-    // measure and set max-height for smooth transition
     const full = contents.scrollHeight;
     contents.style.maxHeight = (full > 0 ? full + "px" : "2000px");
+    // ensure overflow visible so ribbon visible
+    contents.style.overflow = "visible";
   } else {
     contents.style.maxHeight = "0px";
     contents.classList.add("collapsed");
     contents.setAttribute("aria-hidden", "true");
+    // while collapsed, hide overflow to be spoiler-safe
+    contents.style.overflow = "hidden";
   }
 
-  // persist collapsed state
   const map = loadCollapsedMap(runId);
   if (!willExpand) map.add(Number(episode));
   else map.delete(Number(episode));
   saveCollapsedMap(runId, map);
 }
 
+/* Expand/Collapse all */
 function setAllCollapsed(runId, collapsed) {
   const sections = document.querySelectorAll(`.episode-section`);
   const map = loadCollapsedMap(runId);
   if (collapsed) {
-    // collapse all: add every episode number to map
     sections.forEach(sec => {
       const ep = Number(sec.dataset.episode);
       toggleEpisodeSection(runId, ep, false);
       map.add(ep);
     });
   } else {
-    // expand all: remove map and expand each
     sections.forEach(sec => {
       const ep = Number(sec.dataset.episode);
       toggleEpisodeSection(runId, ep, true);
@@ -382,7 +366,97 @@ function setAllCollapsed(runId, collapsed) {
 }
 
 /* ============================
-   renderTimeline (collapsible episodes)
+   Episode selector helpers
+   ============================ */
+function populateEpisodeSelector(episodes) {
+  const sel = document.getElementById("episode-selector");
+  if (!sel) return;
+  sel.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select…";
+  sel.appendChild(placeholder);
+  for (const e of episodes) {
+    const opt = document.createElement("option");
+    opt.value = String(e.episode);
+    opt.textContent = e.date ? `Episode ${e.episode} — ${e.date}` : `Episode ${e.episode}`;
+    sel.appendChild(opt);
+  }
+
+  const jumpBtn = document.getElementById("jump-episode");
+  if (jumpBtn) {
+    jumpBtn.onclick = () => {
+      const val = sel.value;
+      if (!val) return;
+      const anchor = `episode-${val}`;
+      toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, Number(val), true);
+      history.replaceState(null, "", `#${anchor}`);
+      setTimeout(() => {
+        const target = document.getElementById(`episode-contents-${val}`);
+        if (!target) return;
+        const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+        window.scrollTo({ top, behavior: "smooth" });
+      }, 90);
+    };
+  }
+}
+
+/* ============================
+   Permalink parsing & handling
+   ============================ */
+function parseHashAnchorAndParams() {
+  const params = new URLSearchParams(window.location.search || "");
+  const rawHash = (window.location.hash || "").replace(/^#/, "");
+  if (!rawHash) return { anchor: null, params };
+  const qIdx = rawHash.indexOf("?");
+  let anchor = rawHash;
+  if (qIdx !== -1) {
+    anchor = rawHash.substring(0, qIdx);
+    const hashQuery = rawHash.substring(qIdx + 1);
+    const hashParams = new URLSearchParams(hashQuery);
+    for (const [k, v] of hashParams.entries()) params.set(k, v);
+  }
+  return { anchor, params };
+}
+function handlePermalinkOnLoad() {
+  const { anchor, params } = parseHashAnchorAndParams();
+  const expandAndScroll = (episodeNum, shouldExpand) => {
+    toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, episodeNum, Boolean(shouldExpand));
+    setTimeout(() => {
+      // scroll to banner position
+      const banner = document.querySelector(`.episode-section[data-episode="${episodeNum}"] .episode-banner`);
+      const target = banner || document.getElementById(`episode-contents-${episodeNum}`);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: "smooth" });
+    }, 120);
+  };
+
+  if (anchor && anchor.startsWith("episode-")) {
+    const m = /^episode-(\d+)$/.exec(anchor);
+    if (m) {
+      const ep = Number(m[1]);
+      const spoilerParam = params.get("spoiler");
+      const shouldExpand = (spoilerParam === "0") ? false : true;
+      expandAndScroll(ep, shouldExpand);
+      return;
+    }
+  }
+
+  const q = new URLSearchParams(window.location.search || "");
+  const epi = q.get("episode");
+  const spoilerQ = q.get("spoiler");
+  if (epi) {
+    const ep = Number(epi);
+    if (!Number.isNaN(ep)) {
+      const shouldExpand = (spoilerQ === "0") ? false : true;
+      expandAndScroll(ep, shouldExpand);
+    }
+  }
+}
+
+/* ============================
+   Render timeline (full)
    ============================ */
 function renderTimeline(events) {
   const container = document.getElementById("timeline");
@@ -399,7 +473,7 @@ function renderTimeline(events) {
       messageEl.hidden = false;
       messageEl.textContent = "No events found for this run.";
     }
-    populateEpisodeSelector([]); // clear episodes
+    populateEpisodeSelector([]);
     return;
   }
 
@@ -424,12 +498,11 @@ function renderTimeline(events) {
     episodesMap.get(ep).push(ev);
   }
 
-  // persisted collapsed map for current run
+  // persisted collapsed map
   const runKey = CURRENT_RUN_ID || DEFAULT_RUN_ID;
   const persisted = loadCollapsedMap(runKey);
   const hasPersisted = (localStorage.getItem(COLLAPSED_KEY_PREFIX + runKey) !== null);
 
-  // if user hasn't set preference, collapse the last episode by default (avoid spoilers)
   if (!hasPersisted && episodesOrder.length > 0) {
     const lastEp = episodesOrder[episodesOrder.length - 1];
     persisted.add(Number(lastEp));
@@ -442,7 +515,7 @@ function renderTimeline(events) {
     section.className = "episode-section";
     section.dataset.episode = String(ep);
 
-    // banner
+    // Banner
     const banner = document.createElement("div");
     banner.className = "episode-banner";
     banner.tabIndex = 0;
@@ -456,46 +529,30 @@ function renderTimeline(events) {
     titleSpan.textContent = `Episode ${ep}` + (epDate ? ` • ${epDate}` : "");
     banner.appendChild(titleSpan);
 
-    // controls: permalink + chevron
     const controls = document.createElement("div");
     controls.className = "controls";
 
     const permBtn = document.createElement("button");
     permBtn.className = "permalink";
-    permBtn.title = "Copy permalink to this episode";
-    permBtn.innerHTML = "🔗";
     permBtn.title = "Click: copy expanded link — Shift+Click: copy spoiler-safe (collapsed) link";
+    permBtn.innerHTML = "🔗";
     permBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    const anchor = `episode-${ep}`;
-    const base = location.origin + location.pathname + location.search; // keep existing search (if any)
-    // Expanded link (default): #episode-<n>
-    const expandedUrl = base + `#${anchor}`;
-
-    // Safe (collapsed) link: #episode-<n>?spoiler=0
-    // NOTE: we put the spoiler param inside the hash so it's portable when copying anchors only.
-    const safeUrl = base + `#${anchor}?spoiler=0`;
-
-    const toCopy = e.shiftKey ? safeUrl : expandedUrl;
-
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(toCopy).then(() => {
-        const prev = permBtn.textContent;
-        permBtn.textContent = "✓";
-        setTimeout(() => permBtn.textContent = prev, 1200);
-      }).catch(() => {
-        alert("Copy this link: " + toCopy);
-      });
-    } else {
-      // fallback
-      try {
-        window.prompt("Copy link (Ctrl+C / Cmd+C):", toCopy);
-      } catch (err) {
-        alert("Copy this link: " + toCopy);
+      e.stopPropagation();
+      const anchor = `episode-${ep}`;
+      const base = location.origin + location.pathname + location.search;
+      const expandedUrl = base + `#${anchor}`;
+      const safeUrl = base + `#${anchor}?spoiler=0`;
+      const toCopy = e.shiftKey ? safeUrl : expandedUrl;
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(toCopy).then(() => {
+          const prev = permBtn.textContent;
+          permBtn.textContent = "✓";
+          setTimeout(() => permBtn.textContent = prev, 1200);
+        }).catch(() => alert("Copy this link: " + toCopy));
+      } else {
+        try { window.prompt("Copy link (Ctrl+C / Cmd+C):", toCopy); } catch (err) { alert("Copy this link: " + toCopy); }
       }
-    }
-  });
+    });
     controls.appendChild(permBtn);
 
     const chev = document.createElement("span");
@@ -505,19 +562,12 @@ function renderTimeline(events) {
     controls.appendChild(chev);
 
     banner.appendChild(controls);
-
-    // toggle events
     banner.addEventListener("click", () => toggleEpisodeSection(runKey, ep));
-    banner.addEventListener("keydown", (ev) => {
-      if (ev.key === "Enter" || ev.key === " ") {
-        ev.preventDefault();
-        toggleEpisodeSection(runKey, ep);
-      }
-    });
+    banner.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); toggleEpisodeSection(runKey, ep); } });
 
     section.appendChild(banner);
 
-    // contents container
+    // contents
     const contents = document.createElement("div");
     contents.className = "episode-contents";
     contents.id = `episode-contents-${ep}`;
@@ -525,16 +575,16 @@ function renderTimeline(events) {
       contents.classList.add("collapsed");
       contents.setAttribute("aria-hidden", "true");
       contents.style.maxHeight = "0px";
+      contents.style.overflow = "hidden";
     } else {
       contents.setAttribute("aria-hidden", "false");
-      // will set measured maxHeight after append
+      contents.style.overflow = "visible";
     }
 
-    // append events
     const epEvents = episodesMap.get(ep) || [];
     for (const ev of epEvents) {
       const evType = (ev.type || "").toLowerCase();
-      if (evType === "run_end" || evType === "runended" || evType === "run_ended" || evType === "end") {
+      if (["run_end","runended","run_ended","end"].includes(evType)) {
         const endBanner = document.createElement("div");
         endBanner.className = "run-end-banner";
         const parts = [];
@@ -546,6 +596,7 @@ function renderTimeline(events) {
         continue;
       }
       const el = createEventElement(ev);
+      if (typeof markSpecialEvent === "function") markSpecialEvent(ev, el, { highlightName: "Luc" });
       contents.appendChild(el);
     }
 
@@ -553,7 +604,6 @@ function renderTimeline(events) {
     container.appendChild(section);
     episodesArr.push({ episode: ep, date: epDate || "" });
 
-    // set measured maxHeight for expanded content for smoother transitions
     if (isExpanded) {
       requestAnimationFrame(() => {
         const h = contents.scrollHeight;
@@ -563,96 +613,53 @@ function renderTimeline(events) {
   }
 
   populateEpisodeSelector(episodesArr);
-  // ensure Expand/Collapse All controls exist (dynamically create if missing)
   ensureExpandCollapseControls();
-  // handle permalink if present
   handlePermalinkOnLoad();
 }
 
 /* ============================
-   Episode selector & Jump (ensure expand before scroll)
+   Expand/Collapse controls creation (only if not present)
    ============================ */
-function populateEpisodeSelector(episodes) {
-  const sel = document.getElementById("episode-selector");
-  if (!sel) return;
-  sel.innerHTML = "";
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Select…";
-  sel.appendChild(placeholder);
-  for (const e of episodes) {
-    const opt = document.createElement("option");
-    opt.value = String(e.episode);
-    opt.textContent = e.date ? `Episode ${e.episode} — ${e.date}` : `Episode ${e.episode}`;
-    sel.appendChild(opt);
+function ensureExpandCollapseControls() {
+  // If manual controls exist in HTML, just attach listeners
+  const expandBtnManual = document.getElementById("expand-all");
+  const collapseBtnManual = document.getElementById("collapse-all");
+  if (expandBtnManual && collapseBtnManual) {
+    expandBtnManual.onclick = () => setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, false);
+    collapseBtnManual.onclick = () => setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, true);
+    return;
   }
 
-  const jumpBtn = document.getElementById("jump-episode");
-  if (!jumpBtn) return;
-  jumpBtn.onclick = () => {
-    const val = sel.value;
-    if (!val) return;
-    const anchor = `episode-${val}`;
-    // expand episode first
-    toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, Number(val), true);
-    // set hash and scroll a fraction later
-    history.replaceState(null, "", `#${anchor}`);
-    setTimeout(() => {
-      const target = document.getElementById(anchor);
-      if (!target) return;
-      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
-    }, 90);
-  };
+  // Otherwise inject into .controls container (last position)
+  const controlsSection = document.querySelector(".controls") || document.querySelector("section.controls");
+  if (!controlsSection) return;
+  // don't duplicate
+  if (document.getElementById("expand-all") || document.getElementById("collapse-all")) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.gap = "8px";
+  wrapper.style.marginLeft = "8px";
+
+  const expandAll = document.createElement("button");
+  expandAll.id = "expand-all";
+  expandAll.textContent = "Expand all";
+  expandAll.className = "small-control";
+  expandAll.addEventListener("click", () => setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, false));
+
+  const collapseAll = document.createElement("button");
+  collapseAll.id = "collapse-all";
+  collapseAll.textContent = "Collapse all";
+  collapseAll.className = "small-control";
+  collapseAll.addEventListener("click", () => setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, true));
+
+  wrapper.appendChild(expandAll);
+  wrapper.appendChild(collapseAll);
+  controlsSection.appendChild(wrapper);
 }
 
 /* ============================
-   Permalink handling on load
-   ============================ */
-function handlePermalinkOnLoad() {
-  // first parse hash anchor and merged params
-  const { anchor, params } = parseHashAnchorAndParams();
-
-  // helper to expand or not, and then scroll
-  const expandAndScroll = (episodeNum, shouldExpand) => {
-    // make sure the right run is set in CURRENT_RUN_ID before using toggle function
-    toggleEpisodeSection(CURRENT_RUN_ID || DEFAULT_RUN_ID, episodeNum, Boolean(shouldExpand));
-    setTimeout(() => {
-      const target = document.getElementById(`episode-${episodeNum}`);
-      if (!target) return;
-      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
-      window.scrollTo({ top, behavior: "smooth" });
-    }, 120);
-  };
-
-  // If hash anchor exists and looks like "episode-<n>"
-  if (anchor && anchor.startsWith("episode-")) {
-    const m = /^episode-(\d+)$/.exec(anchor);
-    if (m) {
-      const ep = Number(m[1]);
-      const spoilerParam = params.get("spoiler");
-      // spoiler=0 means keep collapsed / safe; anything else or null => expand
-      const shouldExpand = (spoilerParam === "0") ? false : true;
-      expandAndScroll(ep, shouldExpand);
-      return;
-    }
-  }
-
-  // fallback: check query string ?episode=#
-  const q = new URLSearchParams(window.location.search || "");
-  const epi = q.get("episode");
-  const spoilerQ = q.get("spoiler");
-  if (epi) {
-    const ep = Number(epi);
-    if (!Number.isNaN(ep)) {
-      const shouldExpand = (spoilerQ === "0") ? false : true;
-      expandAndScroll(ep, shouldExpand);
-    }
-  }
-}
-
-/* ============================
-   Run details meta population
+   Run details population
    ============================ */
 function populateRunDetails(meta) {
   const container = document.getElementById("run-details");
@@ -661,7 +668,6 @@ function populateRunDetails(meta) {
     container.hidden = true;
     return;
   }
-
   const playerSpriteEl = document.getElementById("player-sprite");
   const rivalSpriteEl = document.getElementById("rival-sprite");
   const playerNameEl = document.getElementById("player-name");
@@ -691,7 +697,7 @@ function populateRunDetails(meta) {
   if (rivalSpriteUrl) rivalSpriteEl.src = rivalSpriteUrl;
   attachPlaceholderOnErrorOrNull(rivalSpriteEl, meta.rival?.species, rivalSpriteUrl);
 
-  // run-ended top badge
+  // run ended meta indicator (optional)
   if (meta.ended) {
     const existing = container.querySelector(".run-ended-top");
     const text = `Run ended: Episode ${meta.ended.episode}` + (meta.ended.date ? ` • ${meta.ended.date}` : "") + (meta.ended.note ? ` — ${meta.ended.note}` : "");
@@ -706,28 +712,11 @@ function populateRunDetails(meta) {
     const existing = container.querySelector(".run-ended-top");
     if (existing) existing.remove();
   }
-
-  // run-specific rules note (optional)
-  if (meta.rules && Array.isArray(meta.rules) && meta.rules.length) {
-    const rulesPanel = document.getElementById("rules-panel");
-    if (rulesPanel) {
-      const existing = rulesPanel.querySelector(".rules-note.dynamic");
-      const text = `Run-specific rules: ${meta.rules.join("; ")}`;
-      if (existing) existing.textContent = text;
-      else {
-        const note = document.createElement("div");
-        note.className = "rules-note dynamic";
-        note.textContent = text;
-        rulesPanel.appendChild(note);
-      }
-    }
-  }
-
   container.hidden = false;
 }
 
 /* ============================
-   Rules panel toggle & Back-to-top
+   Rules panel & Back-to-top
    ============================ */
 function initRulesToggle() {
   const toggle = document.getElementById("rules-toggle");
@@ -739,9 +728,7 @@ function initRulesToggle() {
   toggle.addEventListener("click", () => { if (panel.hidden) openPanel(); else closePanel(); });
   closeBtn?.addEventListener("click", closePanel);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePanel(); });
-  document.addEventListener("click", (e) => {
-    if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target)) closePanel();
-  });
+  document.addEventListener("click", (e) => { if (!panel.hidden && !panel.contains(e.target) && !toggle.contains(e.target)) closePanel(); });
 }
 function initBackToTop() {
   const btn = document.getElementById("back-to-top");
@@ -753,53 +740,7 @@ function initBackToTop() {
 }
 
 /* ============================
-   Expand/Collapse all control insertion
-   ============================ */
-function ensureExpandCollapseControls() {
-  // find controls container in your page (the one containing run-selector etc.)
-  const controlsSection = document.querySelector(".controls") || document.querySelector("section.controls");
-  if (!controlsSection) return;
-
-  // create container for the new buttons (right-aligned)
-  let extras = document.getElementById("expand-collapse-controls");
-  if (!extras) {
-    extras = document.createElement("div");
-    extras.id = "expand-collapse-controls";
-    extras.style.display = "flex";
-    extras.style.gap = "8px";
-    extras.style.marginLeft = "8px";
-    // append to controlsSection (it will appear after existing controls)
-    controlsSection.appendChild(extras);
-  } else {
-    extras.innerHTML = ""; // refresh
-  }
-
-  // Expand All button
-  const expandAll = document.createElement("button");
-  expandAll.id = "expand-all";
-  expandAll.textContent = "Expand all";
-  expandAll.title = "Expand all episodes";
-  expandAll.className = "small-control";
-  expandAll.addEventListener("click", () => {
-    setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, false);
-  });
-
-  // Collapse All button
-  const collapseAll = document.createElement("button");
-  collapseAll.id = "collapse-all";
-  collapseAll.textContent = "Collapse all";
-  collapseAll.title = "Collapse all episodes";
-  collapseAll.className = "small-control";
-  collapseAll.addEventListener("click", () => {
-    setAllCollapsed(CURRENT_RUN_ID || DEFAULT_RUN_ID, true);
-  });
-
-  extras.appendChild(expandAll);
-  extras.appendChild(collapseAll);
-}
-
-/* ============================
-   Load and display run (w/ filtering)
+   Load and display run
    ============================ */
 async function loadAndDisplayRun(runId) {
   if (!runId) runId = DEFAULT_RUN_ID;
@@ -810,9 +751,7 @@ async function loadAndDisplayRun(runId) {
   const q = (document.getElementById("search")?.value || "").trim().toLowerCase();
 
   let events = allEvents.slice();
-  if (filterType && filterType !== "all") {
-    events = events.filter(e => (e.type || "").toLowerCase() === filterType.toLowerCase());
-  }
+  if (filterType && filterType !== "all") events = events.filter(e => (e.type || "").toLowerCase() === filterType.toLowerCase());
   if (q) {
     events = events.filter(e => {
       const species = (e.pokemon?.species || "").toLowerCase();
@@ -831,7 +770,7 @@ async function loadAndDisplayRun(runId) {
 }
 
 /* ============================
-   Startup wiring (init)
+   Init (wiring)
    ============================ */
 async function init() {
   initRulesToggle();
@@ -850,7 +789,12 @@ async function init() {
   });
 
   document.getElementById("filter-type")?.addEventListener("change", () => loadAndDisplayRun(runSel.value));
-  document.getElementById("search")?.addEventListener("input", () => loadAndDisplayRun(runSel.value));
+  // debounce search input to reduce re-renders
+  let searchTimer = null;
+  document.getElementById("search")?.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => loadAndDisplayRun(runSel.value), 240);
+  });
 
   // choose initial run: ?run=run-X OR DEFAULT_RUN_ID OR first in index
   const params = new URLSearchParams(location.search);
@@ -858,6 +802,9 @@ async function init() {
   const initial = (runParam && runs.find(r => r.id === runParam)?.id) || DEFAULT_RUN_ID || runs[0]?.id || DEFAULT_RUN_ID;
   if (runSel) runSel.value = initial;
   await loadAndDisplayRun(initial);
+
+  // reposition ribbons on resize (data-ribbon is pseudo-element so no reposition function needed)
+  window.addEventListener("resize", () => requestAnimationFrame(() => {}));
 }
 
 /* ============================
