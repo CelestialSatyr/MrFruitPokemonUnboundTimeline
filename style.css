@@ -465,3 +465,37 @@ header{
 
 /* small accessibility tweak: keep icon keyboard-focus neutral */
 .gender-icon[title] { cursor: default; }
+
+/* Illegal encounter styling (desaturated like fainted but distinct) */
+.event.illegal {
+  box-shadow: 0 8px 24px rgba(16,18,36,0.04);
+  opacity: 0.95;
+}
+
+/* Desaturate portrait/badge */
+.event.illegal .sprite,
+.event.illegal .badge-icon {
+  filter: grayscale(100%) contrast(85%);
+  opacity: 0.62;
+}
+
+/* Header color for illegal events */
+.event.illegal .event-header {
+  background: linear-gradient(180deg,#f5f5f5,#ececec);
+  color: #4a4a4a;
+  border: 1px solid #dedede;
+}
+
+/* Ribbon appearance when using data-ribbon (muted tone) */
+.event.illegal .event-header[data-ribbon]::before {
+  background: linear-gradient(90deg,#d1d5db,#bdbdbd);
+  color: #222;
+  box-shadow: none;
+}
+
+/* Slightly dim event text */
+.event.illegal .species-nick,
+.event.illegal .obtained-line,
+.event.illegal .item-notes {
+  color: #555;
+}

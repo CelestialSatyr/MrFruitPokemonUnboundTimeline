@@ -148,6 +148,16 @@ function createEventElement(ev) {
   if (type) wrapper.classList.add(`type-${type}`);
   if (type === "fainted") wrapper.classList.add("fainted");
 
+  // Determine illegal flag (flexible checks for backwards compatibility)
+  const isIllegal = Boolean(
+    ev.illegal === true ||
+    (ev.flags && ev.flags.illegal === true) ||
+    (type === "illegal") ||
+    ev.illegalEncounter === true ||
+    (ev.pokemon && ev.pokemon.illegal === true)
+  );
+  if (isIllegal) wrapper.classList.add("illegal");
+
   // Header
   const header = document.createElement("div");
   header.className = "event-header";
@@ -157,6 +167,14 @@ function createEventElement(ev) {
   else if (type === "evolved" || type === "evolution") header.textContent = level ? `Evolved at Level ${level}` : "Evolved";
   else if (type === "badge") header.textContent = "Badge earned";
   else header.textContent = ev.type ? capitalize(ev.type) : "Event";
+
+  // If illegal and no special ribbon/special label planned, set the illegal ribbon now.
+  // (We check ev.special — if markSpecialEvent runs later it may override. This preserves
+  // illegal ribbon only when there's no other special label.)
+  if (isIllegal && !ev.special) {
+    header.setAttribute("data-ribbon", "Illegal Encounter");
+  }
+
   wrapper.appendChild(header);
 
   // Body
@@ -215,13 +233,15 @@ function createEventElement(ev) {
     visual.appendChild(spriteImg);
   }
 
-  // Helper: create a DocumentFragment that contains a gender icon (if present)
-  // followed by the species text. This ensures the icon sits directly BEFORE the species name.
+  // Text column
+  const text = document.createElement("div");
+  text.className = "item-body";
+
+  // small helper: species + gender icon fragment (icon placed BEFORE species)
   function makeSpeciesFragment(speciesText, genderRaw) {
     const frag = document.createDocumentFragment();
     if (speciesText == null) speciesText = "";
 
-    // Normalize gender: accept 'f', 'female', 'm', 'male' (case-insensitive)
     const g = (typeof genderRaw === "string") ? genderRaw.trim().toLowerCase() : "";
     const isFemale = (g === "f" || g === "female");
     const isMale = (g === "m" || g === "male");
@@ -231,43 +251,30 @@ function createEventElement(ev) {
       icon.className = "gender-icon " + (isFemale ? "female" : "male");
       icon.setAttribute("aria-hidden", "true");
       icon.textContent = isFemale ? "♀" : "♂";
-      // tooltip for hover and keyboard users
       icon.title = isFemale ? "Female" : "Male";
       frag.appendChild(icon);
-      frag.appendChild(document.createTextNode(" ")); // small space after icon
+      frag.appendChild(document.createTextNode(" "));
     }
-
     frag.appendChild(document.createTextNode(speciesText));
     return frag;
   }
 
-  // Text column
-  const text = document.createElement("div");
-  text.className = "item-body";
-
   const speciesNick = document.createElement("div");
   speciesNick.className = "species-nick";
 
-  // Build species/nickname display:
   if (type === "evolved" || type === "evolution") {
     const fromName = ev.from || ev.pokemon?.from || ev.pokemon?.before || ev.pokemon?.species || "";
     const toName = ev.to || ev.pokemon?.to || ev.pokemon?.after || ev.pokemon?.species || "";
     const nick = ev.pokemon?.nickname || ev.nickname;
 
     if (fromName && toName) {
-      // Compose: [fromName] → [gender? + toName] [• Named after nick]
       const frag = document.createDocumentFragment();
       frag.appendChild(document.createTextNode(fromName));
       frag.appendChild(document.createTextNode(" → "));
-      // For evolution, gender usually applies to the current pokemon (the 'to' side).
       frag.appendChild(makeSpeciesFragment(toName, ev.pokemon?.gender));
-      if (nick) {
-        frag.appendChild(document.createTextNode(" • Named after " + nick));
-      }
+      if (nick) frag.appendChild(document.createTextNode(" • Named after " + nick));
       speciesNick.appendChild(frag);
-
     } else {
-      // fallback: show species + nickname if we have it
       if (ev.pokemon?.species) {
         const frag = makeSpeciesFragment(ev.pokemon.species, ev.pokemon?.gender);
         speciesNick.appendChild(frag);
@@ -276,12 +283,9 @@ function createEventElement(ev) {
         speciesNick.textContent = "";
       }
     }
-
   } else {
-    // non-evolution events: display gender icon BEFORE species
     const species = ev.pokemon?.species || ev.species || "";
     const nickname = ev.pokemon?.nickname;
-
     if (species) {
       const frag = makeSpeciesFragment(species, ev.pokemon?.gender);
       speciesNick.appendChild(frag);

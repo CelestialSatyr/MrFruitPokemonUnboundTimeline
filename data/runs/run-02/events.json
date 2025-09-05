@@ -59,6 +59,7 @@
     "episode": 3,
     "timestamp": "00:29:22",
     "date": "2025-09-03",
+    "illegal": true,
     "pokemon": {
       "species": "Salazzle",
       "gender": "F",
@@ -68,7 +69,7 @@
     "location": "Icicle Cave 3F",
     "notes": "Has the ability 'Speed Boost'",
     "video": { "url": "https://youtu.be/nHrkugN9wRk?t=1762" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e005",
@@ -93,6 +94,7 @@
     "episode": 4,
     "timestamp": "00:16:49",
     "date": "2025-09-04",
+    "illegal": true,
     "pokemon": {
       "species": "Vivillon",
       "gender": "M",
@@ -102,7 +104,7 @@
     "location": "Icicle Cave 2F",
     "notes": "Has the ability 'Motor Drive'",
     "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=1009" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e007",
@@ -110,6 +112,7 @@
     "episode": 4,
     "timestamp": "00:32:59",
     "date": "2025-09-04",
+    "illegal": true,
     "pokemon": {
       "species": "Sawsbuck",
       "gender": "M",
@@ -119,7 +122,7 @@
     "location": "Icicle Cave 1F",
     "notes": "Has the ability 'Speed Boost'",
     "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=1979" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e008",
@@ -139,6 +142,74 @@
     "label": "Named after me!"
     },
     "video": { "url": "https://youtu.be/-XRO2g6n-P4?t=2446" },
+    "side": "left"
+  },
+  {
+    "id": "e009",
+    "type": "caught",
+    "episode": 5,
+    "timestamp": "00:13:52",
+    "date": "2025-09-05",
+    "pokemon": {
+      "species": "Rapidash",
+      "gender": "M",
+      "nickname": "Dakota",
+      "level": 10
+    },
+    "location": "Route 2 - Static Encounter",
+    "notes": "Because of the Illegal encounter, Dakota has been transferred to another pokemon! Has the ability 'Drought'",
+    "video": { "url": "https://youtu.be/OI3zdfN2rfA?t=832" },
+    "side": "left"
+  },
+  {
+    "id": "e010",
+    "type": "caught",
+    "episode": 5,
+    "timestamp": "00:33:08",
+    "date": "2025-09-05",
+    "pokemon": {
+      "species": "Cloyster",
+      "gender": "F",
+      "nickname": "Karina",
+      "level": 14
+    },
+    "location": "Route 2 - Gift Pokemon",
+    "notes": "Because of the Illegal encounter, Karina has been transferred to another pokemon! Has the ability 'Sand Stream'",
+    "video": { "url": "https://youtu.be/OI3zdfN2rfA?t=1988" },
+    "side": "left"
+  },
+  {
+    "id": "e011",
+    "type": "caught",
+    "episode": 5,
+    "timestamp": "00:51:06",
+    "date": "2025-09-05",
+    "pokemon": {
+      "species": "Exeggutor",
+      "gender": "M",
+      "nickname": "Budder2626",
+      "level": 9
+    },
+    "location": "Route 3",
+    "notes": "Has the ability 'Tough Claws'",
+    "video": { "url": "https://youtu.be/OI3zdfN2rfA?t=3066" },
+    "side": "left"
+  },
+  {
+    "id": "e012",
+    "type": "caught",
+    "episode": 5,
+    "timestamp": "01:05:52",
+    "date": "2025-09-05",
+    "pokemon": {
+      "species": "Florges",
+      "gender": "F",
+      "nickname": "Freyja",
+      "level": 9
+    },
+    "location": "Flower Paradise",
+    "notes": "Because of the Illegal encounter, Freyja has been transferred to another pokemon! Has the ability 'Flame Body'",
+    "video": { "url": "https://youtu.be/OI3zdfN2rfA?t=3952" },
     "side": "left"
   }
 ]
