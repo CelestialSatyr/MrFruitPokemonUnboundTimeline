@@ -211,5 +211,34 @@
     "notes": "Because of the Illegal encounter, Freyja has been transferred to another pokemon! Has the ability 'Flame Body'",
     "video": { "url": "https://youtu.be/OI3zdfN2rfA?t=3952" },
     "side": "left"
+  },
+  {
+    "id": "e013",
+    "type": "badge",
+    "episode": 6,
+    "timestamp": "00:11:06",
+    "date": "2025-09-08",
+    "badge": "Leaf",
+    "location": "Dresco Town",
+    "notes": "The first gym has been conquered! Dresco Town's Leaf Badge is ours!",
+    "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=666" },
+    "side": "left"
+  },
+  {
+    "id": "e014",
+    "type": "caught",
+    "episode": 6,
+    "timestamp": "00:26:45",
+    "date": "2025-09-08",
+    "pokemon": {
+      "species": "Bruxish",
+      "gender": "F",
+      "nickname": "Pippi",
+      "level": 16
+    },
+    "location": "Grim Woods",
+    "notes": "My sincerest condolences for your loss, and for the pokemon you got named after. Has the ability '???'",
+    "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=1600" },
+    "side": "left"
   }
 ]

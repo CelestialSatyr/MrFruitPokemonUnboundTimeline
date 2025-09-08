@@ -303,6 +303,7 @@ function createEventElement(ev) {
   const location = ev.location || ev.obtained || ev.obtainedVia || ev.method || ev.fromLocation || "";
   let locLabel = "Obtained via:";
   if (type === "fainted") locLabel = "Died at:";
+  else if (type === "badge") locLabel = "Obtained at:";
   else if (type === "end") locLabel = "Final location:";
   if (location) obtainedLine.appendChild(document.createTextNode(`${locLabel} ${location}`));
   if (ev.timestamp && ev.video?.url) {
