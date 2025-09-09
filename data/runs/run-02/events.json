@@ -240,5 +240,39 @@
     "notes": "My sincerest condolences for your loss, and for the pokemon you got named after. Has the ability '???'",
     "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=1600" },
     "side": "left"
+  },
+  {
+    "id": "e015",
+    "type": "caught",
+    "episode": 7,
+    "timestamp": "00:18:32",
+    "date": "2025-09-09",
+    "pokemon": {
+      "species": "Gourgeist",
+      "gender": "M",
+      "nickname": "Moki",
+      "level": 16
+    },
+    "location": "Route 4",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/1RKMcJ4_U5w?t=1112" },
+    "side": "left"
+  },
+  {
+    "id": "e016",
+    "type": "caught",
+    "episode": 7,
+    "timestamp": "00:26:56",
+    "date": "2025-09-09",
+    "pokemon": {
+      "species": "Burmy",
+      "gender": "M",
+      "nickname": "AIReaper7...",
+      "level": 15
+    },
+    "location": "Cinder Volcano",
+    "notes": "Has the ability 'Cloud Nine'",
+    "video": { "url": "https://youtu.be/1RKMcJ4_U5w?t=1616" },
+    "side": "left"
   }
 ]
