@@ -237,7 +237,7 @@
       "level": 16
     },
     "location": "Grim Woods",
-    "notes": "My sincerest condolences for your loss, and for the pokemon you got named after. Has the ability '???'",
+    "notes": "My sincerest condolences for your loss, and for the pokemon you got named after. Has the ability 'Skill Link'",
     "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=1600" },
     "side": "left"
   },
@@ -254,7 +254,7 @@
       "level": 16
     },
     "location": "Route 4",
-    "notes": "Has the ability '???'",
+    "notes": "Has the ability 'No Guard'",
     "video": { "url": "https://youtu.be/1RKMcJ4_U5w?t=1112" },
     "side": "left"
   },
@@ -273,6 +273,23 @@
     "location": "Cinder Volcano",
     "notes": "Has the ability 'Cloud Nine'",
     "video": { "url": "https://youtu.be/1RKMcJ4_U5w?t=1616" },
+    "side": "left"
+  },
+  {
+    "id": "e017",
+    "type": "caught",
+    "episode": 8,
+    "timestamp": "00:06:22",
+    "date": "2025-09-10",
+    "pokemon": {
+      "species": "Morelull",
+      "gender": "M",
+      "nickname": "Stratton1...",
+      "level": 15
+    },
+    "location": "Route 3 - Static Encounter",
+    "notes": "Has the ability 'Illuminate'",
+    "video": { "url": "https://youtu.be/DCEdq3A-krE?t=382" },
     "side": "left"
   }
 ]
