@@ -499,3 +499,37 @@ header{
 .event.illegal .item-notes {
   color: #555;
 }
+
+/* Failed encounter style */
+.event.failed {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  opacity: 0.95;
+}
+
+/* Desaturate the sprite / badge for failed */
+.event.failed .sprite,
+.event.failed .badge-icon {
+  filter: grayscale(100%) contrast(85%);
+  opacity: 0.6;
+}
+
+/* Header color for failed events (soft muted red/orange) */
+.event.failed .event-header {
+  background: linear-gradient(180deg, #fff6f4, #fff0ee);
+  color: #6a1b1b;
+  border: 1px solid #ffdede;
+}
+
+/* Ribbon appearance for failed (slightly warm/alert) */
+.event.failed .event-header[data-ribbon]::before {
+  background: linear-gradient(90deg,#ffbcbc,#ff9a9a);
+  color: #3a0b0b;
+  box-shadow: 0 6px 18px rgba(255,110,110,0.06);
+}
+
+/* Slightly dim text for body when failed */
+.event.failed .species-nick,
+.event.failed .obtained-line,
+.event.failed .item-notes {
+  color: #5a5a5a;
+}

@@ -291,5 +291,55 @@
     "notes": "Has the ability 'Illuminate'",
     "video": { "url": "https://youtu.be/DCEdq3A-krE?t=382" },
     "side": "left"
+  },
+  {
+    "id": "e018",
+    "type": "caught",
+    "episode": 9,
+    "timestamp": "00:27:41",
+    "date": "2025-09-11",
+    "failed": true,
+    "pokemon": {
+      "species": "Articuno",
+      "level": 16
+    },
+    "location": "Route 5",
+    "notes": "Unfortunately, Fruit didn't manage to catch Articuno!'",
+    "video": { "url": "https://youtu.be/2HbEf6F9dHk?t=1661" },
+    "side": "right"
+  },
+  {
+    "id": "e019",
+    "type": "caught",
+    "episode": 9,
+    "timestamp": "00:37:00",
+    "date": "2025-09-11",
+    "pokemon": {
+      "species": "Deerling",
+      "gender": "F",
+      "nickname": "Diamond",
+      "level": 20
+    },
+    "location": "Crater Town - Static Encounter",
+    "notes": "Despite forgetting to buy Pokeballs after the failed Articuno encounter, he still managed to catch it with Beast Balls! Has the ability '???'",
+    "video": { "url": "https://youtu.be/2HbEf6F9dHk?t=2220" },
+    "side": "left"
+  },
+  {
+    "id": "e020",
+    "type": "caught",
+    "episode": 9,
+    "timestamp": "00:50:12",
+    "date": "2025-09-11",
+    "pokemon": {
+      "species": "Salazzle",
+      "gender": "F",
+      "nickname": "Dougie",
+      "level": 20
+    },
+    "location": "KBT Expressway",
+    "notes": "A valid Salazzle encounter this time! Has the ability 'Speed Boost'",
+    "video": { "url": "https://youtu.be/2HbEf6F9dHk?t=3012" },
+    "side": "left"
   }
 ]

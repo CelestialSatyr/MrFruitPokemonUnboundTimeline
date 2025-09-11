@@ -148,7 +148,15 @@ function createEventElement(ev) {
   if (type) wrapper.classList.add(`type-${type}`);
   if (type === "fainted") wrapper.classList.add("fainted");
 
-  // Determine illegal flag (flexible checks for backwards compatibility)
+ // Determine failed / illegal flags (flexible checks, backwards-compatible)
+  const isFailed = Boolean(
+    ev.failed === true ||
+    (ev.flags && ev.flags.failed === true) ||
+    (type === "failed") ||
+    ev.failedEncounter === true ||
+    (ev.pokemon && ev.pokemon.failed === true)
+  );
+
   const isIllegal = Boolean(
     ev.illegal === true ||
     (ev.flags && ev.flags.illegal === true) ||
@@ -156,13 +164,25 @@ function createEventElement(ev) {
     ev.illegalEncounter === true ||
     (ev.pokemon && ev.pokemon.illegal === true)
   );
-  if (isIllegal) wrapper.classList.add("illegal");
+
+  // Priority: failed wins over illegal (change if you want opposite)
+  if (isFailed) {
+    wrapper.classList.add("failed");
+  } else if (isIllegal) {
+    wrapper.classList.add("illegal");
+  }
 
   // Header
   const header = document.createElement("div");
   header.className = "event-header";
   const level = ev.pokemon?.level ?? ev.level;
-  if (type === "caught") header.textContent = level ? `Caught at Level ${level}` : "Caught";
+  if (type === "caught") {
+    if (isFailed) {
+      header.textContent = level ? `Failed to catch (Level ${level})` : "Failed to catch";
+  }   else {
+        header.textContent = level ? `Caught at Level ${level}` : "Caught";
+      }
+  }
   else if (type === "fainted") header.textContent = "Fainted";
   else if (type === "evolved" || type === "evolution") header.textContent = level ? `Evolved at Level ${level}` : "Evolved";
   else if (type === "badge") header.textContent = "Badge earned";
@@ -171,10 +191,14 @@ function createEventElement(ev) {
   // If illegal and no special ribbon/special label planned, set the illegal ribbon now.
   // (We check ev.special — if markSpecialEvent runs later it may override. This preserves
   // illegal ribbon only when there's no other special label.)
-  if (isIllegal && !ev.special) {
+    // If failed (highest priority) -> show Failed ribbon unless event has explicit special label
+  if (isFailed && !ev.special) {
+    header.setAttribute("data-ribbon", "Failed Encounter");
+  }
+  // Otherwise if illegal (and no special) -> show Illegal ribbon
+  else if (isIllegal && !ev.special) {
     header.setAttribute("data-ribbon", "Illegal Encounter");
   }
-
   wrapper.appendChild(header);
 
   // Body
