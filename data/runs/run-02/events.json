@@ -218,7 +218,7 @@
     "episode": 6,
     "timestamp": "00:11:06",
     "date": "2025-09-08",
-    "badge": "Leaf",
+    "badge": "Badge_01",
     "location": "Dresco Town",
     "notes": "The first gym has been conquered! Dresco Town's Leaf Badge is ours!",
     "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=666" },
@@ -340,6 +340,76 @@
     "location": "KBT Expressway",
     "notes": "A valid Salazzle encounter this time! Has the ability 'Speed Boost'",
     "video": { "url": "https://youtu.be/2HbEf6F9dHk?t=3012" },
+    "side": "left"
+  },
+  {
+    "id": "e021",
+    "type": "evolved",
+    "episode": 10,
+    "timestamp": "00:00:58",
+    "date": "2025-09-12",
+    "from": "Morelull",
+    "to": "Shiinotic",
+    "notes": "Morelull evolved during off-camera leveling. Their new ability is 'Trace'!",
+    "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=58" },
+    "side": "left"
+  },
+  {
+    "id": "e022",
+    "type": "evolved",
+    "episode": 10,
+    "timestamp": "00:01:32",
+    "date": "2025-09-12",
+    "from": "Burmy",
+    "to": "Mothim",
+    "notes": "Burmy evolved during off-camera leveling. Their new ability is 'Healer'!",
+    "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=92" },
+    "side": "left"
+  },
+  {
+    "id": "e023",
+    "type": "caught",
+    "episode": 10,
+    "timestamp": "00:06:38",
+    "date": "2025-09-12",
+    "pokemon": {
+      "species": "Bellossom",
+      "gender": "M",
+      "nickname": "DragnBooty",
+      "level": 15
+    },
+    "location": "Route 5 - Gift Pokemon",
+    "notes": "A Gift Pokemon! Has the ability 'Technician'",
+    "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=398" },
+    "side": "left"
+  },
+  {
+    "id": "e024",
+    "type": "badge",
+    "episode": 10,
+    "timestamp": "00:58:30",
+    "date": "2025-09-012",
+    "badge": "Badge_02",
+    "location": "Crater Town",
+    "notes": "The second gym has been conquered! Crater Town's Vision Badge is ours!",
+    "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=3510" },
+    "side": "left"
+  },
+  {
+    "id": "e025",
+    "type": "caught",
+    "episode": 10,
+    "timestamp": "01:16:13",
+    "date": "2025-09-12",
+    "pokemon": {
+      "species": "Vivillon",
+      "gender": "F",
+      "nickname": "Luxatik",
+      "level": 17
+    },
+    "location": "Hidden Grotto - Dynamax Den",
+    "notes": "A Dynamax Pokemon! Has the ability '???'",
+    "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=4573" },
     "side": "left"
   }
 ]
