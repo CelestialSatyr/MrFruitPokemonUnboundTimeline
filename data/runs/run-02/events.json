@@ -411,5 +411,38 @@
     "notes": "A Dynamax Pokemon! Has the ability '???'",
     "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=4573" },
     "side": "left"
+  },
+  {
+    "id": "e026",
+    "type": "caught",
+    "episode": 11,
+    "timestamp": "00:27:14",
+    "date": "2025-09-15",
+    "failed": true,
+    "pokemon": {
+      "species": "Hoopa",
+      "level": 20
+    },
+    "location": "Valley Cave",
+    "notes": "Unfortunately, Flame Body wasn't helpful in this scenario..",
+    "video": { "url": "https://youtu.be/oSDTK5wujCo?t=1634" },
+    "side": "right"
+  },
+  {
+    "id": "e027",
+    "type": "caught",
+    "episode": 11,
+    "timestamp": "00:45:41",
+    "date": "2025-09-15",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "MCMHERO",
+      "species": "Farfetch'd",
+      "level": 20
+    },
+    "location": "Route 6",
+    "notes": "Very unceremonious, but Farfetch'd was eventually caught! Has the ability '???'",
+    "video": { "url": "https://youtu.be/oSDTK5wujCo?t=2741" },
+    "side": "left"
   }
 ]
