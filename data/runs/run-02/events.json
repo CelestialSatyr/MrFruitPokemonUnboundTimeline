@@ -408,7 +408,7 @@
       "level": 17
     },
     "location": "Hidden Grotto - Dynamax Den",
-    "notes": "A Dynamax Pokemon! Has the ability '???'",
+    "notes": "A Dynamax Pokemon! Has the ability 'Rough Skin'",
     "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=4573" },
     "side": "left"
   },
@@ -441,8 +441,73 @@
       "level": 20
     },
     "location": "Route 6",
-    "notes": "Very unceremonious, but Farfetch'd was eventually caught! Has the ability '???'",
+    "notes": "Very unceremonious, but Farfetch'd was eventually caught! Has the ability 'Fairy Aura'",
     "video": { "url": "https://youtu.be/oSDTK5wujCo?t=2741" },
     "side": "left"
+  },
+  {
+    "id": "e028",
+    "type": "caught",
+    "episode": 12,
+    "timestamp": "00:09:43",
+    "date": "2025-09-16",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "Kiki",
+      "species": "Alakazam",
+      "level": 22
+    },
+    "location": "Route 7",
+    "notes": "A big risk was taken, but it paid off! Has the ability 'Comatose'",
+    "video": { "url": "https://youtu.be/Pqr_-A6_J5A?t=583" },
+    "side": "left"
+  },
+  {
+    "id": "e029",
+    "type": "caught",
+    "episode": 12,
+    "timestamp": "00:17:57",
+    "date": "2025-09-16",
+    "pokemon": {
+      "nickname": "Dusky",
+      "species": "Groudon",
+      "level": 10
+    },
+    "location": "Zygarde - 10 Cells",
+    "notes": "Very glad Fruit went back to get his Zygarde encounter! Has the ability 'Tangled Feet'",
+    "video": { "url": "https://youtu.be/Pqr_-A6_J5A?t=1077" },
+    "side": "left"
+  },
+  {
+    "id": "e030",
+    "type": "caught",
+    "episode": 12,
+    "timestamp": "00:30:57",
+    "date": "2025-09-16",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "HaterJader",
+      "species": "Swirlix",
+      "level": 22
+    },
+    "location": "Frost Mountain",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/Pqr_-A6_J5A?t=1857" },
+    "side": "left"
+  },
+  {
+    "id": "e031",
+    "type": "fainted",
+    "episode": 12,
+    "timestamp": "00:34:23",
+    "date": "2025-09-16",
+    "pokemon": {
+        "species": "Mothim",
+        "nickname": "AIReaper7...",
+        "level": 30
+    },
+    "location": "Frost Mountain - Rival Fight",
+    "notes": "Tried to Hidden Power (Fire) a Charjabug with Flash Fire, but took an Acrobatics to the face.. One-hit knock out.",
+    "side": "right"
   }
 ]
