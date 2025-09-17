@@ -509,5 +509,21 @@
     "location": "Frost Mountain - Rival Fight",
     "notes": "Tried to Hidden Power (Fire) a Charjabug with Flash Fire, but took an Acrobatics to the face.. One-hit knock out.",
     "side": "right"
+  },
+  {
+    "id": "e032",
+    "type": "caught",
+    "episode": 13,
+    "timestamp": "00:43:01",
+    "date": "2025-09-17",
+    "failed": true,
+    "pokemon": {
+      "species": "Bergmite",
+      "level": 25
+    },
+    "location": "Route 8",
+    "notes": "Bergmite, did in fact, not have it like that.",
+    "video": { "url": "https://youtu.be/P0wWm2vzaiY?t=2581" },
+    "side": "right"
   }
 ]
