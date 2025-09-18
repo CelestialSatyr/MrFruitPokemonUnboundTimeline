@@ -525,5 +525,56 @@
     "notes": "Bergmite, did in fact, not have it like that.",
     "video": { "url": "https://youtu.be/P0wWm2vzaiY?t=2581" },
     "side": "right"
+  },
+  {
+    "id": "e033",
+    "type": "caught",
+    "episode": 14,
+    "timestamp": "00:12:33",
+    "date": "2025-09-18",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "Charizard",
+      "species": "Misdreavus",
+      "level": 24
+    },
+    "location": "Frozen Forest",
+    "notes": "Charizard has been caught! Has the ability 'Unseen Fist'",
+    "video": { "url": "https://youtu.be/184mOXCCgfM?t=753" },
+    "side": "left"
+  },
+  {
+    "id": "e034",
+    "type": "caught",
+    "episode": 14,
+    "timestamp": "00:20:31",
+    "date": "2025-09-18",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "13thSkull",
+      "species": "Nincada",
+      "level": 32
+    },
+    "location": "Frozen Forest - Static Encounter",
+    "notes": "Has the ability 'Magic Guard'",
+    "video": { "url": "https://youtu.be/184mOXCCgfM?t=1231" },
+    "side": "left"
+  },
+  {
+    "id": "e035",
+    "type": "caught",
+    "episode": 14,
+    "timestamp": "00:36:27",
+    "date": "2025-09-18",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "AgentArnie",
+      "species": "Slowbro",
+      "level": 23
+    },
+    "location": "Blizzard City - Gift Pokemon",
+    "notes": "Due to the original gift pokemon being Shiinotic again, a reroll token has been used, and Slowbro got caught! (With the illusion of choice) Has the ability '???'",
+    "video": { "url": "https://youtu.be/184mOXCCgfM?t=2187" },
+    "side": "left"
   }
 ]
