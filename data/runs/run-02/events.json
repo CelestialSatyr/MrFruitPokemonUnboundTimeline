@@ -220,6 +220,14 @@
     "date": "2025-09-08",
     "badge": "Badge_Dresco",
     "location": "Dresco Town",
+    "pokemons": [
+    { "species": "Pyroar", "nickname": "MsTopHats"},
+    { "species": "Loudred", "nickname": "Cap32k"},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Muk", "nickname": "mikealtur"},
+    { "species": "Cloyster", "nickname": "Karina"},
+    { "species": "Florges", "nickname": "Freyja"}
+  ],
     "notes": "The first gym has been conquered! Dresco Town's Leaf Badge is ours!",
     "video": { "url": "https://youtu.be/QYcq2ypvE3M?t=666" },
     "side": "left"
@@ -391,6 +399,14 @@
     "date": "2025-09-012",
     "badge": "Badge_Crater",
     "location": "Crater Town",
+    "pokemons": [
+    { "species": "Pyroar", "nickname": "MsTopHats"},
+    { "species": "Mothim", "nickname": "AIReaper7..."},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Muk", "nickname": "mikealtur"},
+    { "species": "Cloyster", "nickname": "Karina"},
+    { "species": "Florges", "nickname": "Freyja"}
+  ],
     "notes": "The second gym has been conquered! Crater Town's Vision Badge is ours!",
     "video": { "url": "https://youtu.be/yyr-yPMV0-A?t=3510" },
     "side": "left"
@@ -575,6 +591,26 @@
     "location": "Blizzard City - Gift Pokemon",
     "notes": "Due to the original gift pokemon being Shiinotic again, a reroll token has been used, and Slowbro got caught! (With the illusion of choice) Has the ability '???'",
     "video": { "url": "https://youtu.be/184mOXCCgfM?t=2187" },
+    "side": "left"
+  },
+  {
+    "id": "e036",
+    "type": "badge",
+    "episode": 15,
+    "timestamp": "00:46:57",
+    "date": "2025-09-019",
+    "badge": "Badge_Blizzard",
+    "location": "Blizzard City",
+    "pokemons": [
+    { "species": "Pyroar", "nickname": "MsTopHats"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Muk", "nickname": "mikealtur"},
+    { "species": "Bruxish", "nickname": "Pippi"},
+    { "species": "Florges", "nickname": "Freyja"}
+  ],
+    "notes": "The third gym has been conquered! Blizzard City's Wing Badge is ours!",
+    "video": { "url": "https://youtu.be/oYJtSJWoYMY?t=2817" },
     "side": "left"
   }
 ]

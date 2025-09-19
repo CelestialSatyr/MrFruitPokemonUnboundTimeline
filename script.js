@@ -393,36 +393,80 @@ function markSpecialEvent(ev, el, opts = {}) {
 /* ============================
    Episode expand/collapse helpers
    ============================ */
-function toggleEpisodeSection(runId, episode, expand) {
-  const section = document.querySelector(`.episode-section[data-episode="${episode}"]`);
-  if (!section) return;
-  const banner = section.querySelector(".episode-banner");
-  const contents = section.querySelector(".episode-contents");
-  if (!banner || !contents) return;
+function toggleEpisodeSection(runKey, ep) {
+  const contents = document.getElementById(`episode-contents-${ep}`);
+  const banner = document.querySelector(`.episode-section[data-episode="${ep}"] .episode-banner`);
+  if (!contents || !banner) return;
 
-  const isExpanded = banner.getAttribute("aria-expanded") === "true";
-  let willExpand = (typeof expand === "boolean") ? expand : !isExpanded;
+  const collapsedSet = loadCollapsedMap(runKey);
 
-  banner.setAttribute("aria-expanded", willExpand ? "true" : "false");
-  if (willExpand) {
+  const isCollapsed = contents.classList.contains("collapsed");
+
+  if (isCollapsed) {
+    // ---- EXPAND ----
     contents.classList.remove("collapsed");
     contents.setAttribute("aria-hidden", "false");
-    const full = contents.scrollHeight;
-    contents.style.maxHeight = (full > 0 ? full + "px" : "2000px");
-    // ensure overflow visible so ribbon visible
-    contents.style.overflow = "visible";
-  } else {
+    banner.setAttribute("aria-expanded", "true");
+
+    // measure natural height
+    const targetHeight = contents.scrollHeight;
+
+    // ensure starting point for animation (0)
     contents.style.maxHeight = "0px";
+    contents.style.overflow = "hidden";
+
+    // animate to measured height on next frame
+    requestAnimationFrame(() => {
+      contents.style.maxHeight = targetHeight + "px";
+    });
+
+    // after transition: remove max-height to allow natural flow
+    const onExpandEnd = (e) => {
+      if (e.propertyName === "max-height") {
+        contents.style.maxHeight = "none";
+        contents.style.overflow = "visible";
+        contents.removeEventListener("transitionend", onExpandEnd);
+      }
+    };
+    contents.addEventListener("transitionend", onExpandEnd);
+
+    // update persisted map => remove from collapsed
+    collapsedSet.delete(Number(ep));
+    saveCollapsedMap(runKey, collapsedSet);
+
+  } else {
+    // ---- COLLAPSE ----
+    // measure current height to animate from it
+    const startH = contents.scrollHeight;
+    // set explicit pixel height (ensure animation from this height)
+    contents.style.maxHeight = startH + "px";
+    contents.style.overflow = "hidden";
+
+    // on next frame, animate to 0
+    requestAnimationFrame(() => {
+      contents.style.maxHeight = "0px";
+    });
+
+    // mark collapsed state immediately for ARIA and class
     contents.classList.add("collapsed");
     contents.setAttribute("aria-hidden", "true");
-    // while collapsed, hide overflow to be spoiler-safe
-    contents.style.overflow = "hidden";
-  }
+    banner.setAttribute("aria-expanded", "false");
 
-  const map = loadCollapsedMap(runId);
-  if (!willExpand) map.add(Number(episode));
-  else map.delete(Number(episode));
-  saveCollapsedMap(runId, map);
+    // After transition end, keep it collapsed state (maxHeight 0)
+    const onCollapseEnd = (e) => {
+      if (e.propertyName === "max-height") {
+        // keep maxHeight at 0 so it stays collapsed
+        contents.style.maxHeight = "0px";
+        contents.style.overflow = "hidden";
+        contents.removeEventListener("transitionend", onCollapseEnd);
+      }
+    };
+    contents.addEventListener("transitionend", onCollapseEnd);
+
+    // update persisted map => add to collapsed
+    collapsedSet.add(Number(ep));
+    saveCollapsedMap(runKey, collapsedSet);
+  }
 }
 
 /* Expand/Collapse all */
@@ -539,12 +583,22 @@ function handlePermalinkOnLoad() {
    Render timeline (full)
    ============================ */
 function renderTimeline(events) {
-  const container = document.getElementById("timeline");
+  // --- Find timeline container and clear any stray capture listeners by replacing with a clean clone ---
+  let container = document.getElementById("timeline");
   const messageEl = document.getElementById("message");
   if (!container) {
     console.warn("No #timeline element found.");
     return;
   }
+
+  // Replace the timeline container node with a shallow clone to remove any previously-attached event listeners
+  // (this avoids needing to remove unknown capturing handlers that may have been attached earlier).
+  const oldContainer = container;
+  const fresh = oldContainer.cloneNode(false);
+  fresh.id = oldContainer.id;
+  if (oldContainer.parentNode) oldContainer.parentNode.replaceChild(fresh, oldContainer);
+  container = fresh;
+
   container.innerHTML = "";
   if (messageEl) messageEl.hidden = true;
 
@@ -616,6 +670,7 @@ function renderTimeline(events) {
     permBtn.className = "permalink";
     permBtn.title = "Click: copy expanded link — Shift+Click: copy spoiler-safe (collapsed) link";
     permBtn.innerHTML = "🔗";
+    // keep the permBtn stopPropagation (safe) so clicking it won't toggle the banner
     permBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const anchor = `episode-${ep}`;
@@ -642,8 +697,25 @@ function renderTimeline(events) {
     controls.appendChild(chev);
 
     banner.appendChild(controls);
-    banner.addEventListener("click", () => toggleEpisodeSection(runKey, ep));
-    banner.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); toggleEpisodeSection(runKey, ep); } });
+
+    // Banner click should toggle the episode, BUT ignore clicks that start on interactive targets
+    banner.addEventListener("click", (e) => {
+      // If the click started inside an interactive element (link/button/input/select/textarea),
+      // do NOT toggle the banner — allow the interactive element to function normally.
+      // This is a safe, localized guard (it doesn't globally stop event propagation).
+      if (e.target && e.target.closest && e.target.closest("a,button,input,select,textarea")) {
+        return;
+      }
+      toggleEpisodeSection(runKey, ep);
+    });
+
+    // Keyboard handling — ensure we ignore Enter/Space when focus is on interactive child
+    banner.addEventListener("keydown", (ev) => {
+      if ((ev.key === "Enter" || ev.key === " ") && !(ev.target && ev.target.closest && ev.target.closest("a,button,input,select,textarea"))) {
+        ev.preventDefault();
+        toggleEpisodeSection(runKey, ep);
+      }
+    });
 
     section.appendChild(banner);
 
@@ -664,6 +736,8 @@ function renderTimeline(events) {
     const epEvents = episodesMap.get(ep) || [];
     for (const ev of epEvents) {
       const evType = (ev.type || "").toLowerCase();
+
+      // Run end banner
       if (["run_end","runended","run_ended","end"].includes(evType)) {
         const endBanner = document.createElement("div");
         endBanner.className = "run-end-banner";
@@ -675,6 +749,28 @@ function renderTimeline(events) {
         contents.appendChild(endBanner);
         continue;
       }
+
+      // gym/badge milestone handling
+      if (evType === "badge" || evType === "gym") {
+        if (typeof createGymElement === "function") {
+          try {
+            const gymEl = createGymElement(ev);
+            contents.appendChild(gymEl);
+          } catch (err) {
+            console.warn("Failed to create gym element for event:", ev, err);
+            const fallback = createEventElement(ev);
+            if (typeof markSpecialEvent === "function") markSpecialEvent(ev, fallback, { highlightName: "Luc" });
+            contents.appendChild(fallback);
+          }
+        } else {
+          const fallback2 = createEventElement(ev);
+          if (typeof markSpecialEvent === "function") markSpecialEvent(ev, fallback2, { highlightName: "Luc" });
+          contents.appendChild(fallback2);
+        }
+        continue;
+      }
+
+      // Default: regular event card
       const el = createEventElement(ev);
       if (typeof markSpecialEvent === "function") markSpecialEvent(ev, el, { highlightName: "Luc" });
       contents.appendChild(el);
@@ -685,12 +781,26 @@ function renderTimeline(events) {
     episodesArr.push({ episode: ep, date: epDate || "" });
 
     if (isExpanded) {
-      requestAnimationFrame(() => {
-        const h = contents.scrollHeight;
-        contents.style.maxHeight = (h > 0 ? h + "px" : "2000px");
+  // Measure and animate to the real height, then clear maxHeight after transition
+  requestAnimationFrame(() => {
+    const h = contents.scrollHeight;
+    // set measured height to make the block the correct size (this also supports CSS transition)
+    contents.style.maxHeight = (h > 0 ? h + "px" : "0px");
+
+    // after the CSS transition finishes, remove max-height so it can size naturally (and won't block pointer events)
+    const onEnd = (e) => {
+      if (e.propertyName === "max-height") 
+          {
+            contents.style.maxHeight = "none";
+            contents.removeEventListener("transitionend", onEnd);
+          }
+        };
+        contents.addEventListener("transitionend", onEnd);
       });
     }
   }
+
+  ensureInteractiveTargetsInTimeline();
 
   populateEpisodeSelector(episodesArr);
   ensureExpandCollapseControls();
@@ -887,7 +997,176 @@ async function init() {
   window.addEventListener("resize", () => requestAnimationFrame(() => {}));
 }
 
+/**
+ * createGymElement(ev)
+ * Builds a full-width gym/banner milestone element to insert into the timeline.
+ * Expects ev to have: badgeName, town, time, pokemons (array), notes, date
+ */
+function createGymElement(ev) {
+  const section = document.createElement("section");
+  section.className = "gym-section";
+
+  // banner container
+  const banner = document.createElement("div");
+  banner.className = "gym-banner";
+
+  // floating badge icon (center)
+  const badgeIcon = document.createElement("div");
+  badgeIcon.className = "gym-badge-icon";
+
+  // Use existing badgeUrlFor helper if available
+  const badgeNameCandidate = ev.badgeImage || ev.badgeName || ev.badge || null;
+  const badgeUrl = (typeof badgeUrlFor === "function") ? badgeUrlFor(badgeNameCandidate) : null;
+
+  if (badgeUrl) {
+    const img = document.createElement("img");
+    img.alt = ev.badgeName || ev.badge || "Badge";
+    img.src = badgeUrl;
+    // reuse your placeholder handler (if it exists)
+    if (typeof attachPlaceholderOnErrorOrNull === "function") {
+      attachPlaceholderOnErrorOrNull(img, badgeNameCandidate, badgeUrl);
+    }
+    // NOTE: we set pointer-events:none via CSS to avoid icon intercepting clicks.
+    badgeIcon.appendChild(img);
+  } else {
+    // fallback to text label inside badge icon
+    badgeIcon.textContent = ev.badgeName || ev.badge || "Gym Badge";
+  }
+
+  banner.appendChild(badgeIcon);
+
+  // row with pokemon sprites (used to beat gym)
+  const pkRow = document.createElement("div");
+  pkRow.className = "gym-pokemon-row";
+
+  const pokemons = Array.isArray(ev.pokemons) ? ev.pokemons : [];
+  const wrapThreshold = 6;
+  if (pokemons.length > wrapThreshold) pkRow.classList.add("wrap");
+
+  if (pokemons.length === 0) {
+    const p = document.createElement("div");
+    p.className = "gym-pokemon";
+    const t = document.createElement("div");
+    t.className = "pk-name";
+    t.textContent = "No Pokémon listed";
+    p.appendChild(t);
+    pkRow.appendChild(p);
+  } else {
+    if (pokemons.length === 1) pkRow.style.justifyContent = "center";
+    else pkRow.style.justifyContent = "space-between";
+
+    for (const pkm of pokemons) {
+      const card = document.createElement("div");
+      card.className = "gym-pokemon";
+
+      const img = document.createElement("img");
+      img.className = "sprite";
+      img.alt = pkm.species || pkm.speciesName || pkm.name || "pokemon";
+      const speciesName = pkm.species || pkm.speciesName || pkm.name || "";
+
+      // use your existing sprite loader helper if present
+      if (typeof spriteUrlFor === "function") {
+        const sUrl = spriteUrlFor(speciesName);
+        if (sUrl) img.src = sUrl;
+      }
+      if (typeof attachPlaceholderOnErrorOrNull === "function") {
+        attachPlaceholderOnErrorOrNull(img, speciesName, img.src);
+      }
+
+      card.appendChild(img);
+
+      const nameLine = document.createElement("div");
+      nameLine.className = "pk-name";
+      if (pkm.nickname) nameLine.textContent = `${pkm.nickname} • ${speciesName}`;
+      else nameLine.textContent = speciesName || "Unknown";
+      card.appendChild(nameLine);
+
+      pkRow.appendChild(card);
+    }
+  }
+
+  banner.appendChild(pkRow);
+
+  // meta row: left: "Badge Earned!", right: "Town Gym at Time (clickable)"
+  const meta = document.createElement("div");
+  meta.className = "gym-meta";
+  const left = document.createElement("div");
+  left.className = "left";
+  left.textContent = "Badge Earned!";
+
+  const right = document.createElement("div");
+  right.className = "right";
+
+  const town = ev.town || ev.location || "";
+  const time = ev.time || ev.timestamp || ev.date || "";
+  // We want: "Town Gym" optionally " at [time]" where time is a clickable link if ev.video?.url is present.
+  const townText = town ? `${town} Gym` : "Gym";
+  right.appendChild(document.createTextNode(townText));
+
+  if (time) {
+    right.appendChild(document.createTextNode(" at "));
+    // if there's a video URL, make the time clickable
+    const videoUrl = (ev.video && ev.video.url) ? ev.video.url : (ev.videoUrl || ev.timeUrl || null);
+    if (videoUrl) {
+      const a = document.createElement("a");
+      a.href = videoUrl;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = time;
+      // stop propagation so the click doesn't bubble to any parent banner click handler
+      a.addEventListener("click", (e) => { e.stopPropagation(); });
+      // ensure pointerdown also doesn't bubble (better for touch)
+      a.addEventListener("pointerdown", (e) => { e.stopPropagation(); }, { passive: true });
+      right.appendChild(a);
+    } else {
+      // plain text if no URL
+      const span = document.createElement("span");
+      span.textContent = time;
+      right.appendChild(span);
+    }
+  }
+
+  meta.appendChild(left);
+  meta.appendChild(right);
+  banner.appendChild(meta);
+
+  // description / notes area
+  if (ev.notes) {
+    const desc = document.createElement("div");
+    desc.className = "gym-description";
+    desc.textContent = ev.notes;
+    banner.appendChild(desc);
+  }
+
+  section.appendChild(banner);
+  return section;
+}
+
 /* ============================
    Start
    ============================ */
 document.addEventListener("DOMContentLoaded", init);
+
+function ensureInteractiveTargetsInTimeline() {
+  const container = document.getElementById("timeline");
+  if (!container) return;
+
+  // add handlers to anchors and interactive elements inside the timeline so their clicks don't bubble to banner
+  const selector = "a, button, input, select, textarea";
+  const els = container.querySelectorAll(selector);
+  els.forEach(el => {
+    // Avoid attaching multiple times:
+    if (el.dataset._interactiveBound) return;
+    // Stop propagation early (pointerdown) to prevent parent handlers from capturing the interaction
+    el.addEventListener("pointerdown", (e) => {
+      // let the interactive element handle pointerdown normally, but don't let parents treat this as a banner toggle
+      e.stopPropagation();
+    }, { passive: true });
+    // Also guard click (fallback)
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      // do NOT call preventDefault here — we want the default link/button behavior to continue
+    });
+    el.dataset._interactiveBound = "1";
+  });
+}
