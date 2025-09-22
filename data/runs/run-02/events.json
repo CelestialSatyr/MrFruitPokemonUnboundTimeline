@@ -612,5 +612,79 @@
     "notes": "The third gym has been conquered! Blizzard City's Wing Badge is ours!",
     "video": { "url": "https://youtu.be/oYJtSJWoYMY?t=2817" },
     "side": "left"
+  },
+  {
+    "id": "e037",
+    "type": "evolved",
+    "episode": 16,
+    "timestamp": "00:03:10",
+    "date": "2025-09-22",
+    "from": "Deerling",
+    "to": "Sawsbuck",
+    "notes": "Deerling evolved during off-camera leveling. Their new ability is 'Battle Armor'!",
+    "video": { "url": "https://youtu.be/36vnxm9TIPk?t=190" },
+    "side": "left"
+  },
+  {
+    "id": "e038",
+    "type": "evolved",
+    "episode": 16,
+    "timestamp": "00:03:45",
+    "date": "2025-09-22",
+    "from": "Nincada",
+    "to": "Ninjask",
+    "notes": "Nincada evolved during off-camera leveling. Their new ability is 'Wonder Skin'!",
+    "video": { "url": "https://youtu.be/36vnxm9TIPk?t=225" },
+    "side": "left"
+  },
+  {
+    "id": "e039",
+    "type": "caught",
+    "episode": 16,
+    "timestamp": "00:18:05",
+    "date": "2025-09-22",
+    "failed": true,
+    "pokemon": {
+      "species": "Zapdos",
+      "level": 25
+    },
+    "location": "Route 8 - Hidden Grotto Re-roll",
+    "notes": "Unfortunately, Flame Body wasn't helpful in this scenario either..",
+    "video": { "url": "https://youtu.be/36vnxm9TIPk?t=1085" },
+    "side": "right"
+  },
+  {
+    "id": "e040",
+    "type": "caught",
+    "episode": 16,
+    "timestamp": "00:22:28",
+    "date": "2025-09-22",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "Hydrate",
+      "species": "Rowlet",
+      "level": 29
+    },
+    "location": "Route 6 - Hidden Grotto",
+    "notes": "Is this the pokemon that will replace Pong Lenis? It all depends on their ability I think! Has the ability '???'",
+    "video": { "url": "https://youtu.be/36vnxm9TIPk?t=1348" },
+    "side": "left"
+  },
+  {
+    "id": "e041",
+    "type": "caught",
+    "episode": 16,
+    "timestamp": "00:48:02",
+    "date": "2025-09-22",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "Sleep",
+      "species": "Cresselia",
+      "level": 12
+    },
+    "location": "Fallshore City",
+    "notes": "The legendary capture curse has finally been broken! On the edge of defeat, with 1 Pokeball to spare, Cresselia has been captured! (With a very ironic name considering the battle) Has the ability 'Run Away'",
+    "video": { "url": "https://youtu.be/36vnxm9TIPk?t=2882" },
+    "side": "left"
   }
 ]
