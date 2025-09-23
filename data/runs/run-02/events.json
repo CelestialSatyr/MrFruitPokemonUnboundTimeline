@@ -686,5 +686,51 @@
     "notes": "The legendary capture curse has finally been broken! On the edge of defeat, with 1 Pokeball to spare, Cresselia has been captured! (With a very ironic name considering the battle) Has the ability 'Run Away'",
     "video": { "url": "https://youtu.be/36vnxm9TIPk?t=2882" },
     "side": "left"
+  },
+  {
+    "id": "e042",
+    "type": "evolved",
+    "episode": 17,
+    "timestamp": "00:04:58",
+    "date": "2025-09-23",
+    "from": "Rowlet",
+    "to": "Decidueye",
+    "notes": "Rowlet evolved during off-camera leveling. Their new ability is 'Grim Neigh'!",
+    "video": { "url": "https://youtu.be/JiO1f6XXE2s?t=298" },
+    "side": "left"
+  },
+  {
+    "id": "e043",
+    "type": "caught",
+    "episode": 17,
+    "timestamp": "00:10:13",
+    "date": "2025-09-23",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "Aurora",
+      "species": "Skarmory",
+      "level": 1
+    },
+    "location": "Fallshore City - Gift Pokemon",
+    "notes": "Has the ability 'Dry Skin'",
+    "video": { "url": "https://youtu.be/JiO1f6XXE2s?t=613" },
+    "side": "left"
+  },
+  {
+    "id": "e044",
+    "type": "caught",
+    "episode": 17,
+    "timestamp": "00:21:53",
+    "date": "2025-09-23",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "Prof. Lulu",
+      "species": "Helioptile",
+      "level": 28
+    },
+    "location": "Route 11",
+    "notes": "Has the ability 'Guts'",
+    "video": { "url": "https://youtu.be/JiO1f6XXE2s?t=1313" },
+    "side": "left"
   }
 ]
