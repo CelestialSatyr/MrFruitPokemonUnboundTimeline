@@ -732,5 +732,73 @@
     "notes": "Has the ability 'Guts'",
     "video": { "url": "https://youtu.be/JiO1f6XXE2s?t=1313" },
     "side": "left"
+  },
+  {
+    "id": "e045",
+    "type": "caught",
+    "episode": 18,
+    "timestamp": "00:05:58",
+    "date": "2025-09-24",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "Liza",
+      "species": "Wishiwashi",
+      "level": 21
+    },
+    "location": "Epidimy Town",
+    "notes": "Has the ability 'Schooling', it's original ability!",
+    "video": { "url": "https://youtu.be/8f3fbjjZUzU?t=358" },
+    "side": "left"
+  },
+  {
+    "id": "e046",
+    "type": "caught",
+    "episode": 18,
+    "timestamp": "00:09:44",
+    "date": "2025-09-24",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "DeadVenom",
+      "species": "Corsola",
+      "level": 28
+    },
+    "location": "Thundercap Mt.",
+    "notes": "It's kill or be killed, but it's luckily the hidden third option, catch! Has the ability 'Shadow Tag'",
+    "video": { "url": "https://youtu.be/8f3fbjjZUzU?t=584" },
+    "side": "left"
+  },
+  {
+    "id": "e047",
+    "type": "caught",
+    "episode": 18,
+    "timestamp": "00:12:55",
+    "date": "2025-09-24",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "Loafy",
+      "species": "Blitzle",
+      "level": 26
+    },
+    "location": "Cliff Cave",
+    "notes": "Has the ability 'Psychic Surge'",
+    "video": { "url": "https://youtu.be/8f3fbjjZUzU?t=775" },
+    "side": "left"
+  },
+  {
+    "id": "e048",
+    "type": "caught",
+    "episode": 18,
+    "timestamp": "00:40:40",
+    "date": "2025-09-24",
+    "pokemon": {
+      "gender": "M",
+      "nickname": "AbsltBangr",
+      "species": "Cottonee",
+      "level": 26
+    },
+    "location": "Route 10",
+    "notes": "Has the ability 'Multiscale'",
+    "video": { "url": "https://youtu.be/8f3fbjjZUzU?t=2440" },
+    "side": "left"
   }
 ]
