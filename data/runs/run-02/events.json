@@ -817,5 +817,71 @@
     "notes": "Has the ability 'Magician'",
     "video": { "url": "https://youtu.be/J9SV54utDLk?t=2329" },
     "side": "left"
+  },
+  {
+    "id": "e050",
+    "type": "caught",
+    "episode": 20,
+    "timestamp": "00:08:35",
+    "date": "2025-09-26",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "GalinTurpn",
+      "species": "Raticate",
+      "level": 27
+    },
+    "location": "Auburn Waterway",
+    "notes": "Has the ability 'Sap Sipper'",
+    "video": { "url": "https://youtu.be/b_9CEkPVWo4?t=515" },
+    "side": "left"
+  },
+  {
+    "id": "e051",
+    "type": "fainted",
+    "episode": 20,
+    "timestamp": "00:14:13",
+    "date": "2025-09-26",
+    "pokemon": {
+      "species": "Ninjask",
+      "nickname": "13thSkull",
+      "level": 36
+    },
+    "location": "Route 9",
+    "video": { "url": "https://youtu.be/b_9CEkPVWo4?t=853" },
+    "notes": "Unfortunately, the imposter got the kill",
+    "side": "right"
+  },
+  {
+    "id": "e052",
+    "type": "caught",
+    "episode": 20,
+    "timestamp": "00:20:03",
+    "date": "2025-09-26",
+    "failed": true,
+    "pokemon": {
+      "species": "Tapu Bulu",
+      "level": 29
+    },
+    "location": "Route 9",
+    "notes": "A Tapu Bulu with Imposter, what could possibly go wrong? Everything.",
+    "video": { "url": "https://youtu.be/b_9CEkPVWo4?t=1203" },
+    "side": "right"
+  },
+  {
+    "id": "e053",
+    "type": "caught",
+    "episode": 20,
+    "timestamp": "00:41:33",
+    "date": "2025-09-26",
+    "pokemon": {
+      "gender": "F",
+      "nickname": "Rokushoo",
+      "species": "Ludicolo",
+      "level": 27
+    },
+    "location": "Autl Woods",
+    "notes": "Has the ability 'Innards Out'",
+    "video": { "url": "https://youtu.be/b_9CEkPVWo4?t=2493" },
+    "side": "left"
   }
 ]
