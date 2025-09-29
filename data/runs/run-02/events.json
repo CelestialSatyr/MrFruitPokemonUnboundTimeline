@@ -883,5 +883,21 @@
     "notes": "Has the ability 'Innards Out'",
     "video": { "url": "https://youtu.be/b_9CEkPVWo4?t=2493" },
     "side": "left"
+  },
+  {
+    "id": "e054",
+    "type": "caught",
+    "episode": 21,
+    "timestamp": "00:28:14",
+    "date": "2025-09-29",
+    "pokemon": {
+      "nickname": "NickMash14",
+      "species": "Dhelmise",
+      "level": 27
+    },
+    "location": "Fallshore City Gym",
+    "notes": "Has the ability 'As One'",
+    "video": { "url": "https://youtu.be/5ebJgv09XmU?t=1694" },
+    "side": "left"
   }
 ]
