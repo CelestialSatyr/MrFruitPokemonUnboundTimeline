@@ -899,5 +899,42 @@
     "notes": "Has the ability 'As One'",
     "video": { "url": "https://youtu.be/5ebJgv09XmU?t=1694" },
     "side": "left"
+  },
+  {
+    "id": "e055",
+    "type": "badge",
+    "episode": 22,
+    "timestamp": "00:16:24",
+    "date": "2025-09-30",
+    "badge": "Badge_Fallshore",
+    "location": "Fallshore City",
+    "pokemons": [
+    { "species": "Rapidash", "nickname": "Dakota"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Cottonee", "nickname": "AbsltBangr"},
+    { "species": "Wishiwashi", "nickname": "Liza"},
+    { "species": "Cresselia", "nickname": "Sleep"},
+    { "species": "Florges", "nickname": "Freyja"}
+  ],
+    "notes": "The fourth gym has been conquered! Fallshore City's Fall Badge is ours!",
+    "video": { "url": "https://youtu.be/lpHqUulE8xY?t=984" },
+    "side": "left"
+  },
+  {
+    "id": "e056",
+    "type": "caught",
+    "episode": 22,
+    "timestamp": "00:30:14",
+    "date": "2025-09-30",
+    "pokemon": {
+      "nickname": "NeonTadpol",
+      "species": "Seaking",
+      "gender": "F",
+      "level": 27
+    },
+    "location": "Route 9 - Hidden Grotto",
+    "notes": "Has the ability 'Full Metal Body'",
+    "video": { "url": "https://youtu.be/lpHqUulE8xY?t=1814" },
+    "side": "left"
   }
 ]
