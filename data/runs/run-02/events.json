@@ -936,5 +936,17 @@
     "notes": "Has the ability 'Full Metal Body'",
     "video": { "url": "https://youtu.be/lpHqUulE8xY?t=1814" },
     "side": "left"
+  },
+  {
+    "id": "e057",
+    "type": "evolved",
+    "episode": 23,
+    "timestamp": "00:07:24",
+    "date": "2025-10-01",
+    "from": "Loudred",
+    "to": "Exploud",
+    "notes": "Loudred evolved during off-camera leveling. Their new ability is 'Shadow Shield'!",
+    "video": { "url": "https://youtu.be/2YkUwjY9pOk?t=444" },
+    "side": "left"
   }
 ]
