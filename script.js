@@ -54,6 +54,58 @@ function attachPlaceholderOnErrorOrNull(imgEl, label, url) {
   };
 }
 
+function createNoEventElement(ev = {}) {
+  // ev.message (string) recommended; optional ev.note or ev.episode
+  const wrapper = document.createElement("article");
+  wrapper.className = "event no-event type-note";
+  // keep consistent float placement (put center by treating as full width-ish)
+  wrapper.style.width = "100%";
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.padding = "0";
+  wrapper.style.background = "transparent";
+  wrapper.style.boxShadow = "none";
+
+  const card = document.createElement("div");
+  card.className = "no-event-card";
+  card.setAttribute("role", "status");
+  card.setAttribute("aria-live", "polite");
+
+  // message (primary)
+  const msg = document.createElement("div");
+  msg.className = "no-event-message";
+  msg.textContent = ev.message || "No major events in this episode.";
+  card.appendChild(msg);
+
+  // optional small note below
+  if (ev.note) {
+    const note = document.createElement("div");
+    note.className = "item-notes";
+    note.style.marginTop = "8px";
+    note.style.fontStyle = "normal";
+    note.style.fontSize = "0.92rem";
+    note.textContent = ev.note;
+    card.appendChild(note);
+  }
+
+  // optional link to episode (if ev.video?.url exists)
+  if (ev.video && ev.video.url) {
+    const linkRow = document.createElement("div");
+    linkRow.style.marginTop = "8px";
+    const a = document.createElement("a");
+    a.href = ev.video.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Watch episode";
+    a.addEventListener("click", (e) => e.stopPropagation()); // avoid toggling parent banner
+    linkRow.appendChild(a);
+    card.appendChild(linkRow);
+  }
+
+  wrapper.appendChild(card);
+  return wrapper;
+}
+
 /* fetch helper */
 async function fetchJson(path) {
   try {
@@ -260,6 +312,58 @@ function createEventElement(ev) {
   // Text column
   const text = document.createElement("div");
   text.className = "item-body";
+
+  function createNoEventElement(ev = {}) {
+  // ev.message (string) recommended; optional ev.note or ev.episode
+  const wrapper = document.createElement("article");
+  wrapper.className = "event no-event type-note";
+  // keep consistent float placement (put center by treating as full width-ish)
+  wrapper.style.width = "100%";
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.padding = "0";
+  wrapper.style.background = "transparent";
+  wrapper.style.boxShadow = "none";
+
+  const card = document.createElement("div");
+  card.className = "no-event-card";
+  card.setAttribute("role", "status");
+  card.setAttribute("aria-live", "polite");
+
+  // message (primary)
+  const msg = document.createElement("div");
+  msg.className = "no-event-message";
+  msg.textContent = ev.message || "No major events in this episode.";
+  card.appendChild(msg);
+
+  // optional small note below
+  if (ev.note) {
+    const note = document.createElement("div");
+    note.className = "item-notes";
+    note.style.marginTop = "8px";
+    note.style.fontStyle = "normal";
+    note.style.fontSize = "0.92rem";
+    note.textContent = ev.note;
+    card.appendChild(note);
+  }
+
+  // optional link to episode (if ev.video?.url exists)
+  if (ev.video && ev.video.url) {
+    const linkRow = document.createElement("div");
+    linkRow.style.marginTop = "8px";
+    const a = document.createElement("a");
+    a.href = ev.video.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = "Watch episode";
+    a.addEventListener("click", (e) => e.stopPropagation()); // avoid toggling parent banner
+    linkRow.appendChild(a);
+    card.appendChild(linkRow);
+  }
+
+  wrapper.appendChild(card);
+  return wrapper;
+}
 
   // small helper: species + gender icon fragment (icon placed BEFORE species)
   function makeSpeciesFragment(speciesText, genderRaw) {
@@ -583,7 +687,7 @@ function handlePermalinkOnLoad() {
    Render timeline (full)
    ============================ */
 function renderTimeline(events) {
-  // --- Find timeline container and clear any stray capture listeners by replacing with a clean clone ---
+  // --- Clear previous timeline container listeners by replacing with a fresh shallow clone ---
   let container = document.getElementById("timeline");
   const messageEl = document.getElementById("message");
   if (!container) {
@@ -591,8 +695,7 @@ function renderTimeline(events) {
     return;
   }
 
-  // Replace the timeline container node with a shallow clone to remove any previously-attached event listeners
-  // (this avoids needing to remove unknown capturing handlers that may have been attached earlier).
+  // Replace the timeline node with a shallow clone to remove any stray global listeners
   const oldContainer = container;
   const fresh = oldContainer.cloneNode(false);
   fresh.id = oldContainer.id;
@@ -632,11 +735,12 @@ function renderTimeline(events) {
     episodesMap.get(ep).push(ev);
   }
 
-  // persisted collapsed map
+  // persisted collapsed map handling
   const runKey = CURRENT_RUN_ID || DEFAULT_RUN_ID;
   const persisted = loadCollapsedMap(runKey);
   const hasPersisted = (localStorage.getItem(COLLAPSED_KEY_PREFIX + runKey) !== null);
 
+  // If user hasn't set preference, collapse the last episode by default (avoid spoilers)
   if (!hasPersisted && episodesOrder.length > 0) {
     const lastEp = episodesOrder[episodesOrder.length - 1];
     persisted.add(Number(lastEp));
@@ -663,6 +767,20 @@ function renderTimeline(events) {
     titleSpan.textContent = `Episode ${ep}` + (epDate ? ` • ${epDate}` : "");
     banner.appendChild(titleSpan);
 
+    // Pill for "no major events" if episode empty or contains an explicit no_event
+    const epEvents = episodesMap.get(ep) || [];
+    const containsNoEvent = epEvents.some(ev => {
+      const t = (ev.type || "").toLowerCase();
+      return t === "no_event" || t === "note" || t === "minor";
+    });
+    if (epEvents.length === 0 || containsNoEvent) {
+      const pill = document.createElement("span");
+      pill.className = "no-event-pill";
+      pill.textContent = "No major events";
+      banner.appendChild(pill);
+    }
+
+    // small controls (permalink + chevron)
     const controls = document.createElement("div");
     controls.className = "controls";
 
@@ -670,7 +788,6 @@ function renderTimeline(events) {
     permBtn.className = "permalink";
     permBtn.title = "Click: copy expanded link — Shift+Click: copy spoiler-safe (collapsed) link";
     permBtn.innerHTML = "🔗";
-    // keep the permBtn stopPropagation (safe) so clicking it won't toggle the banner
     permBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const anchor = `episode-${ep}`;
@@ -698,18 +815,15 @@ function renderTimeline(events) {
 
     banner.appendChild(controls);
 
-    // Banner click should toggle the episode, BUT ignore clicks that start on interactive targets
+    // Banner click: toggle episode, but ignore clicks originating from interactive children
     banner.addEventListener("click", (e) => {
-      // If the click started inside an interactive element (link/button/input/select/textarea),
-      // do NOT toggle the banner — allow the interactive element to function normally.
-      // This is a safe, localized guard (it doesn't globally stop event propagation).
       if (e.target && e.target.closest && e.target.closest("a,button,input,select,textarea")) {
-        return;
+        return; // allow interactive elements to act
       }
       toggleEpisodeSection(runKey, ep);
     });
 
-    // Keyboard handling — ensure we ignore Enter/Space when focus is on interactive child
+    // keyboard handling (skip if focus on interactive child)
     banner.addEventListener("keydown", (ev) => {
       if ((ev.key === "Enter" || ev.key === " ") && !(ev.target && ev.target.closest && ev.target.closest("a,button,input,select,textarea"))) {
         ev.preventDefault();
@@ -719,7 +833,7 @@ function renderTimeline(events) {
 
     section.appendChild(banner);
 
-    // contents
+    // contents container (collapsible)
     const contents = document.createElement("div");
     contents.className = "episode-contents";
     contents.id = `episode-contents-${ep}`;
@@ -731,13 +845,108 @@ function renderTimeline(events) {
     } else {
       contents.setAttribute("aria-hidden", "false");
       contents.style.overflow = "visible";
+      // measure real height and then clear max-height after transition for natural layout
+      requestAnimationFrame(() => {
+        const h = contents.scrollHeight;
+        contents.style.maxHeight = (h > 0 ? h + "px" : "0px");
+        const onEnd = (e) => {
+          if (e.propertyName === "max-height") {
+            contents.style.maxHeight = "none";
+            contents.removeEventListener("transitionend", onEnd);
+          }
+        };
+        contents.addEventListener("transitionend", onEnd);
+      });
     }
 
-    const epEvents = episodesMap.get(ep) || [];
+    // If episode has no events at all — show subtle placeholder
+    if (epEvents.length === 0) {
+      // Prefer user's createNoEventElement if provided; else create a small fallback
+      let placeholder;
+      if (typeof createNoEventElement === "function") {
+        placeholder = createNoEventElement({
+          message: "No major events in this episode.",
+          note: "Short video or housekeeping content."
+        });
+      } else {
+        const pWrap = document.createElement("article");
+        pWrap.className = "event no-event type-note";
+        pWrap.style.width = "100%";
+        pWrap.style.display = "flex";
+        pWrap.style.justifyContent = "center";
+        pWrap.style.padding = "0";
+        pWrap.style.background = "transparent";
+        pWrap.style.boxShadow = "none";
+
+        const card = document.createElement("div");
+        card.className = "no-event-card";
+        card.setAttribute("role", "status");
+        card.setAttribute("aria-live", "polite");
+        const msg = document.createElement("div");
+        msg.className = "no-event-message";
+        msg.textContent = "No major events in this episode.";
+        card.appendChild(msg);
+        pWrap.appendChild(card);
+        placeholder = pWrap;
+      }
+      contents.appendChild(placeholder);
+    }
+
+    // iterate events for this episode
     for (const ev of epEvents) {
       const evType = (ev.type || "").toLowerCase();
 
-      // Run end banner
+      // explicit no_event handling (use user's helper if present)
+      if (evType === "no_event" || evType === "note" || evType === "minor") {
+        if (typeof createNoEventElement === "function") {
+          const noEl = createNoEventElement(ev);
+          contents.appendChild(noEl);
+        } else {
+          const pWrap = document.createElement("article");
+          pWrap.className = "event no-event type-note";
+          pWrap.style.width = "100%";
+          pWrap.style.display = "flex";
+          pWrap.style.justifyContent = "center";
+          pWrap.style.padding = "0";
+          pWrap.style.background = "transparent";
+          pWrap.style.boxShadow = "none";
+
+          const card = document.createElement("div");
+          card.className = "no-event-card";
+          card.setAttribute("role", "status");
+          card.setAttribute("aria-live", "polite");
+          const msg = document.createElement("div");
+          msg.className = "no-event-message";
+          msg.textContent = ev.message || ev.note || "No major events recorded for this entry.";
+          card.appendChild(msg);
+          if (ev.note) {
+            const small = document.createElement("div");
+            small.className = "item-notes";
+            small.style.marginTop = "8px";
+            small.style.fontStyle = "normal";
+            small.style.fontSize = "0.92rem";
+            small.textContent = ev.note;
+            card.appendChild(small);
+          }
+          if (ev.video && ev.video.url) {
+            const linkRow = document.createElement("div");
+            linkRow.style.marginTop = "8px";
+            const a = document.createElement("a");
+            a.href = ev.video.url;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.textContent = "Watch episode";
+            a.addEventListener("click", (e) => e.stopPropagation());
+            linkRow.appendChild(a);
+            card.appendChild(linkRow);
+          }
+          pWrap.appendChild(card);
+          contents.appendChild(pWrap);
+        }
+        continue; // next event
+      }
+
+      // run end banner
       if (["run_end","runended","run_ended","end"].includes(evType)) {
         const endBanner = document.createElement("div");
         endBanner.className = "run-end-banner";
@@ -750,7 +959,7 @@ function renderTimeline(events) {
         continue;
       }
 
-      // gym/badge milestone handling
+      // gym/badge milestone handling (delegate to createGymElement if present)
       if (evType === "badge" || evType === "gym") {
         if (typeof createGymElement === "function") {
           try {
@@ -770,7 +979,7 @@ function renderTimeline(events) {
         continue;
       }
 
-      // Default: regular event card
+      // default: regular event card
       const el = createEventElement(ev);
       if (typeof markSpecialEvent === "function") markSpecialEvent(ev, el, { highlightName: "Luc" });
       contents.appendChild(el);
@@ -780,17 +989,14 @@ function renderTimeline(events) {
     container.appendChild(section);
     episodesArr.push({ episode: ep, date: epDate || "" });
 
+    // ensure collapse animation is sized correctly when initially expanded
     if (isExpanded) {
-  // Measure and animate to the real height, then clear maxHeight after transition
-  requestAnimationFrame(() => {
-    const h = contents.scrollHeight;
-    // set measured height to make the block the correct size (this also supports CSS transition)
-    contents.style.maxHeight = (h > 0 ? h + "px" : "0px");
-
-    // after the CSS transition finishes, remove max-height so it can size naturally (and won't block pointer events)
-    const onEnd = (e) => {
-      if (e.propertyName === "max-height") 
-          {
+      requestAnimationFrame(() => {
+        const h = contents.scrollHeight;
+        // animate to measured height and then clear to allow natural sizing
+        contents.style.maxHeight = (h > 0 ? h + "px" : "0px");
+        const onEnd = (e) => {
+          if (e.propertyName === "max-height") {
             contents.style.maxHeight = "none";
             contents.removeEventListener("transitionend", onEnd);
           }
@@ -800,12 +1006,25 @@ function renderTimeline(events) {
     }
   }
 
-  ensureInteractiveTargetsInTimeline();
-
   populateEpisodeSelector(episodesArr);
   ensureExpandCollapseControls();
   handlePermalinkOnLoad();
+
+  // ensure anchors/buttons inside timeline don't let banner handle their clicks
+  if (typeof ensureInteractiveTargetsInTimeline === "function") {
+    ensureInteractiveTargetsInTimeline();
+  } else {
+    // fallback: add minimal protection for anchors inside the timeline (stop propagation on pointerdown)
+    const interactiveEls = container.querySelectorAll("a,button,input,select,textarea");
+    interactiveEls.forEach(el => {
+      if (el.dataset._interactiveBound) return;
+      el.addEventListener("pointerdown", (e) => { e.stopPropagation(); }, { passive: true });
+      el.addEventListener("click", (e) => { e.stopPropagation(); });
+      el.dataset._interactiveBound = "1";
+    });
+  }
 }
+
 
 /* ============================
    Expand/Collapse controls creation (only if not present)

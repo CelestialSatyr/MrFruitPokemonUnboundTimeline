@@ -948,5 +948,13 @@
     "notes": "Loudred evolved during off-camera leveling. Their new ability is 'Shadow Shield'!",
     "video": { "url": "https://youtu.be/2YkUwjY9pOk?t=444" },
     "side": "left"
+  },
+  {
+    "id": "e058",
+    "type": "no_event",
+    "episode": 24,
+    "date": "2025-10-02",
+    "message": "Chill episode — no catches, no deaths, just housekeeping.",
+    "note": "Climbed Mt Thundercap, and freed Zapdos!"
   }
 ]
