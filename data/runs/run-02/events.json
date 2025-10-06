@@ -964,5 +964,42 @@
     "date": "2025-10-03",
     "message": "Yaplocke episode — no catches, no deaths, just housekeeping and talking about some of the houserules.",
     "note": "Fought through the Tarmigan Mansion! (Gym 4.5)"
+  },
+  {
+    "id": "e060",
+    "type": "badge",
+    "episode": 26,
+    "timestamp": "00:16:15",
+    "date": "2025-10-06",
+    "badge": "MegaBracelet",
+    "location": "Tarmigan Mansion",
+    "pokemons": [
+    { "species": "Rapidash", "nickname": "Dakota"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Slowbro", "nickname": "AgentArnie"},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Raticate", "nickname": "GalinTurpn"},
+    { "species": "Florges", "nickname": "Freyja"}
+  ],
+    "notes": "The Tarmigan Mansion has been conquered! The Mega Bracelet is ours!",
+    "video": { "url": "https://youtu.be/Mw5cUR6C0S4?t=975" },
+    "side": "left"
+  },
+  {
+    "id": "e061",
+    "type": "caught",
+    "episode": 26,
+    "timestamp": "00:30:14",
+    "date": "2025-10-06",
+    "pokemon": {
+      "nickname": "RebelTeddy",
+      "species": "Horsea",
+      "gender": "M",
+      "level": 21
+    },
+    "location": "Tarmigan Town",
+    "notes": "Has the ability 'Fur Coat'",
+    "video": { "url": "https://youtu.be/Mw5cUR6C0S4?t=1814" },
+    "side": "left"
   }
 ]
