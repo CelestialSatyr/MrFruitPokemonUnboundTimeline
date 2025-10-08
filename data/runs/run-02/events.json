@@ -1035,5 +1035,22 @@
     "notes": "Has the ability 'Mold Breaker'",
     "video": { "url": "https://youtu.be/8YBX7qqvDGM?t=1599" },
     "side": "left"
+  },
+  {
+    "id": "e064",
+    "type": "caught",
+    "episode": 28,
+    "timestamp": "00:37:31",
+    "date": "2025-10-08",
+    "pokemon": {
+      "nickname": "CrUwUzer",
+      "species": "Galvantula",
+      "gender": "F",
+      "level": 30
+    },
+    "location": "Dehara City - Gift Pokemon",
+    "notes": "Has the ability 'Imposter'",
+    "video": { "url": "https://youtu.be/4xBeSFCb7RQ?t=2221" },
+    "side": "left"
   }
 ]
