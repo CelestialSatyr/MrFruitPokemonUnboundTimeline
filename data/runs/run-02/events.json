@@ -1052,5 +1052,55 @@
     "notes": "Has the ability 'Imposter'",
     "video": { "url": "https://youtu.be/4xBeSFCb7RQ?t=2221" },
     "side": "left"
+  },
+  {
+    "id": "e065",
+    "type": "caught",
+    "episode": 29,
+    "timestamp": "00:09:39",
+    "date": "2025-10-09",
+    "pokemon": {
+      "nickname": "Gris",
+      "species": "Mesprit",
+      "level": 10
+    },
+    "location": "Dehara City",
+    "notes": "Has the ability 'Wonder Skin'",
+    "video": { "url": "https://youtu.be/VAMdaSFjNpM?t=579" },
+    "side": "left"
+  },
+  {
+    "id": "e066",
+    "type": "caught",
+    "episode": 29,
+    "timestamp": "00:14:34",
+    "date": "2025-10-09",
+    "pokemon": {
+      "nickname": "LtJorge16",
+      "species": "Dewgong",
+      "gender": "M",
+      "level": 36
+    },
+    "location": "Rift Cave",
+    "notes": "Has the ability 'Fairy Aura'",
+    "video": { "url": "https://youtu.be/VAMdaSFjNpM?t=874" },
+    "side": "left"
+  },
+  {
+    "id": "e067",
+    "type": "caught",
+    "episode": 29,
+    "timestamp": "00:26:36",
+    "date": "2025-10-09",
+    "pokemon": {
+      "nickname": "Venatusss",
+      "species": "Wimpod",
+      "gender": "M",
+      "level": 37
+    },
+    "location": "Ruins of Void",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/VAMdaSFjNpM?t=1596" },
+    "side": "left"
   }
 ]
