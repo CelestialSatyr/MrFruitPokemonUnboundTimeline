@@ -1102,5 +1102,13 @@
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/VAMdaSFjNpM?t=1596" },
     "side": "left"
+  },
+  {
+    "id": "e068",
+    "type": "no_event",
+    "episode": 30,
+    "date": "2025-10-10",
+    "message": "Got stuck inside a pokeball for a while, no catches, no deaths, just a relaxed hour of power.",
+    "note": "Fought through the Ruins of Void!"
   }
 ]
