@@ -1110,5 +1110,13 @@
     "date": "2025-10-10",
     "message": "Got stuck inside a pokeball for a while, no catches, no deaths, just a relaxed hour of power.",
     "note": "Fought through the Ruins of Void!"
+  },
+  {
+    "id": "e069",
+    "type": "no_event",
+    "episode": 31,
+    "date": "2025-10-14",
+    "message": "The yaplocke continues, but not because of Fruit this time around!",
+    "note": "The story exhibition is strong in this episode, no catches, no deaths."
   }
 ]
