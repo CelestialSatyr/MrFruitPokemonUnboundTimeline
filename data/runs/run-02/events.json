@@ -1118,5 +1118,21 @@
     "date": "2025-10-14",
     "message": "The yaplocke continues, but not because of Fruit this time around!",
     "note": "The story exhibition is strong in this episode, no catches, no deaths."
+  },
+  {
+    "id": "e070",
+    "type": "caught",
+    "episode": 32,
+    "timestamp": "00:40:56",
+    "date": "2025-10-15",
+    "pokemon": {
+      "nickname": "Koiamboo",
+      "species": "Arceus",
+      "level": 35
+    },
+    "location": "Dehara Gym",
+    "notes": "Congratulations Koiamboo, you're now god! Has the ability 'Technician'",
+    "video": { "url": "https://youtu.be/Bebj5GtzHTE?t=2456" },
+    "side": "left"
   }
 ]
