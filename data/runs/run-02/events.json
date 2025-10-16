@@ -1134,5 +1134,64 @@
     "notes": "Congratulations Koiamboo, you're now god! Has the ability 'Technician'",
     "video": { "url": "https://youtu.be/Bebj5GtzHTE?t=2456" },
     "side": "left"
+  },
+  {
+    "id": "e071",
+    "type": "evolved",
+    "episode": 33,
+    "timestamp": "00:03:39",
+    "date": "2025-10-16",
+    "from": "Diglett",
+    "to": "Dugtrio",
+    "notes": "Diglett evolved during off-camera leveling. Their new ability is 'As One'!",
+    "video": { "url": "https://youtu.be/JQOGzN2P-04?t=219" },
+    "side": "left"
+  },
+  {
+    "id": "e072",
+    "type": "evolved",
+    "episode": 33,
+    "timestamp": "00:04:30",
+    "date": "2025-10-16",
+    "from": "Hakamo-o",
+    "to": "Kommo-o",
+    "notes": "Hakamo-o evolved during off-camera leveling. Their new ability is 'Magic Guard'!",
+    "special": {
+    "label": "Named after me!"
+    },
+    "video": { "url": "https://youtu.be/JQOGzN2P-04?t=270" },
+    "side": "left"
+  },
+  {
+    "id": "e073",
+    "type": "evolved",
+    "episode": 33,
+    "timestamp": "00:06:21",
+    "date": "2025-10-16",
+    "from": "Wimpod",
+    "to": "Golisopod",
+    "notes": "Wimpod evolved during off-camera leveling. Their new ability is 'Punk Rock'!",
+    "video": { "url": "https://youtu.be/JQOGzN2P-04?t=381" },
+    "side": "left"
+  },
+  {
+    "id": "e074",
+    "type": "badge",
+    "episode": 33,
+    "timestamp": "00:34:04",
+    "date": "2025-10-16",
+    "badge": "Badge_Dehara",
+    "location": "Dehara Gym",
+    "pokemons": [
+    { "species": "Salazzle", "nickname": "Dougie"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Zebstrika", "nickname": "Loafy"},
+    { "species": "Slowbro", "nickname": "AgentArnie"},
+    { "species": "Skarmory", "nickname": "Aurora"}
+  ],
+    "notes": "The Dehara Gym has been conquered! The fifth badge is ours!",
+    "video": { "url": "https://youtu.be/JQOGzN2P-04?t=2044" },
+    "side": "left"
   }
 ]
