@@ -1193,5 +1193,56 @@
     "notes": "The Dehara Gym has been conquered! The fifth badge is ours!",
     "video": { "url": "https://youtu.be/JQOGzN2P-04?t=2044" },
     "side": "left"
+  },
+  {
+    "id": "e075",
+    "type": "caught",
+    "episode": 34,
+    "timestamp": "00:19:00",
+    "date": "2025-10-17",
+    "pokemon": {
+      "nickname": "Pet Wussy",
+      "species": "Noibat",
+      "gender": "F",
+      "level": 37
+    },
+    "location": "Great Desert",
+    "notes": "Pet Wussy has joined the group of wonderful names! Has the ability '???'",
+    "video": { "url": "https://youtu.be/S2ktWUApwuE?t=1140" },
+    "side": "left"
+  },
+  {
+    "id": "e076",
+    "type": "caught",
+    "episode": 34,
+    "timestamp": "01:06:29",
+    "date": "2025-10-17",
+    "pokemon": {
+      "nickname": "LilBitz",
+      "species": "Mankey",
+      "gender": "F",
+      "level": 35
+    },
+    "location": "Great Desert - Static Encounter",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/S2ktWUApwuE?t=3989" },
+    "side": "left"
+  },
+  {
+    "id": "e077",
+    "type": "caught",
+    "episode": 34,
+    "timestamp": "01:11:45",
+    "date": "2025-10-17",
+    "pokemon": {
+      "nickname": "FLY",
+      "species": "Miltank",
+      "gender": "F",
+      "level": 40
+    },
+    "location": "Great Desert - Static Encounter",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/S2ktWUApwuE?t=4305" },
+    "side": "left"
   }
 ]
