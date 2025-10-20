@@ -1130,7 +1130,7 @@
       "species": "Arceus",
       "level": 35
     },
-    "location": "Dehara Gym",
+    "location": "Dehara Gym - Static Encounter",
     "notes": "Congratulations Koiamboo, you're now god! Has the ability 'Technician'",
     "video": { "url": "https://youtu.be/Bebj5GtzHTE?t=2456" },
     "side": "left"
@@ -1207,7 +1207,7 @@
       "level": 37
     },
     "location": "Great Desert",
-    "notes": "Pet Wussy has joined the group of wonderful names! Has the ability '???'",
+    "notes": "Pet Wussy has joined the group of wonderful names! Has the ability 'Gooey'",
     "video": { "url": "https://youtu.be/S2ktWUApwuE?t=1140" },
     "side": "left"
   },
@@ -1243,6 +1243,56 @@
     "location": "Great Desert - Static Encounter",
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/S2ktWUApwuE?t=4305" },
+    "side": "left"
+  },
+  {
+    "id": "e078",
+    "type": "caught",
+    "episode": 35,
+    "timestamp": "00:29:42",
+    "date": "2025-10-20",
+    "pokemon": {
+      "nickname": "Varda",
+      "species": "Crabrawler",
+      "gender": "M",
+      "level": 40
+    },
+    "location": "Gurun Town",
+    "notes": "Has the ability 'Analytic'",
+    "video": { "url": "https://youtu.be/xPi9VfaTa_Q?t=1782" },
+    "side": "left"
+  },
+  {
+    "id": "e079",
+    "type": "caught",
+    "episode": 35,
+    "timestamp": "00:38:26",
+    "date": "2025-10-20",
+    "pokemon": {
+      "nickname": "WearJacks",
+      "species": "Amoonguss",
+      "gender": "F",
+      "level": 32
+    },
+    "location": "Vivill Woods",
+    "notes": "Has the ability 'Effect Spore'",
+    "video": { "url": "https://youtu.be/xPi9VfaTa_Q?t=2306" },
+    "side": "left"
+  },
+  {
+    "id": "e080",
+    "type": "caught",
+    "episode": 35,
+    "timestamp": "00:47:02",
+    "date": "2025-10-20",
+    "pokemon": {
+      "nickname": "J'Zargo",
+      "species": "Shaymin",
+      "level": 40
+    },
+    "location": "Dehara Gym - Static Encounter",
+    "notes": "It was indeed, first try. Has the ability 'Mega Launcher'",
+    "video": { "url": "https://youtu.be/xPi9VfaTa_Q?t=2822" },
     "side": "left"
   }
 ]
