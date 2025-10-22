@@ -1294,5 +1294,55 @@
     "notes": "It was indeed, first try. Has the ability 'Mega Launcher'",
     "video": { "url": "https://youtu.be/xPi9VfaTa_Q?t=2822" },
     "side": "left"
+  },
+  {
+    "id": "e081",
+    "type": "caught",
+    "episode": 36,
+    "timestamp": "00:03:18",
+    "date": "2025-10-22",
+    "pokemon": {
+      "nickname": "Abbey",
+      "species": "Stufful",
+      "gender": "F",
+      "level": 36
+    },
+    "location": "Route 18",
+    "notes": "Has the ability 'Pastel Veil'",
+    "video": { "url": "https://youtu.be/VASFbivWgVU?t=198" },
+    "side": "left"
+  },
+  {
+    "id": "e082",
+    "type": "caught",
+    "episode": 36,
+    "timestamp": "00:39:09",
+    "date": "2025-10-22",
+    "failed": true,
+    "pokemon": {
+      "species": "Tapu Koko",
+      "level": 35
+    },
+    "location": "Vivill Woods - Static Encounter",
+    "notes": "Unfortunately, despite Fruit's best efforts, Tapu Koko could not be caught.",
+    "video": { "url": "https://youtu.be/VASFbivWgVU?t=2349" },
+    "side": "right"
+  },
+  {
+    "id": "e083",
+    "type": "caught",
+    "episode": 36,
+    "timestamp": "00:50:28",
+    "date": "2025-10-22",
+    "pokemon": {
+      "nickname": "RaftJunk",
+      "species": "Pansage",
+      "gender": "M",
+      "level": 24
+    },
+    "location": "Vivill Town",
+    "notes": "Has the ability 'Intimidate'",
+    "video": { "url": "https://youtu.be/VASFbivWgVU?t=3028" },
+    "side": "left"
   }
 ]
