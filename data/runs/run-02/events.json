@@ -1344,5 +1344,13 @@
     "notes": "Has the ability 'Intimidate'",
     "video": { "url": "https://youtu.be/VASFbivWgVU?t=3028" },
     "side": "left"
+  },
+  {
+    "id": "e0684",
+    "type": "no_event",
+    "episode": 37,
+    "date": "2025-10-24",
+    "message": "Puzzles, puzzles, puzzles!",
+    "note": "We invaded the Light of Ruin base, and got caught in some puzzles, no catches, no deaths."
   }
 ]
