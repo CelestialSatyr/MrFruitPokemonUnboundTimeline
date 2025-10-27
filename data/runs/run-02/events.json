@@ -1352,5 +1352,39 @@
     "date": "2025-10-24",
     "message": "Puzzles, puzzles, puzzles!",
     "note": "We invaded the Light of Ruin base, and got caught in some puzzles, no catches, no deaths."
+  },
+  {
+    "id": "e085",
+    "type": "caught",
+    "episode": 38,
+    "timestamp": "00:20:38",
+    "date": "2025-10-27",
+    "pokemon": {
+      "nickname": "CoolRalph",
+      "species": "Snorlax",
+      "gender": "M",
+      "level": 40
+    },
+    "location": "Vivill Warehouse",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/Ikc1wacmee0?t=1238" },
+    "side": "left"
+  },
+  {
+    "id": "e086",
+    "type": "caught",
+    "episode": 38,
+    "timestamp": "00:44:16",
+    "date": "2025-10-27",
+    "pokemon": {
+      "nickname": "ALLIELx23",
+      "species": "Gastly",
+      "gender": "F",
+      "level": 45
+    },
+    "location": "Route 16",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/Ikc1wacmee0?t=2656" },
+    "side": "left"
   }
 ]
