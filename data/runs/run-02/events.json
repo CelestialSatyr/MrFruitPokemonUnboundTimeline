@@ -1386,5 +1386,39 @@
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/Ikc1wacmee0?t=2656" },
     "side": "left"
+  },
+  {
+    "id": "e087",
+    "type": "caught",
+    "episode": 39,
+    "timestamp": "00:02:05",
+    "date": "2025-10-29",
+    "pokemon": {
+      "nickname": "Tig-OBitty",
+      "species": "Volbeat",
+      "gender": "M",
+      "level": 25
+    },
+    "location": "Fossil Encounter",
+    "notes": "Has the ability 'Imposter'",
+    "video": { "url": "https://youtu.be/W7amAOBYFts?t=125" },
+    "side": "left"
+  },
+  {
+    "id": "e088",
+    "type": "caught",
+    "episode": 39,
+    "timestamp": "00:09:18",
+    "date": "2025-10-29",
+    "pokemon": {
+      "nickname": "Dreamc4str",
+      "species": "Lapras",
+      "gender": "M",
+      "level": 45
+    },
+    "location": "Route 15 (But encountered in Route 16)",
+    "notes": "Has the ability 'Adaptability'",
+    "video": { "url": "https://youtu.be/W7amAOBYFts?t=558" },
+    "side": "left"
   }
 ]
