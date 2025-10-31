@@ -523,6 +523,7 @@
         "level": 30
     },
     "location": "Frost Mountain - Rival Fight",
+    "video": { "url": "https://youtu.be/Pqr_-A6_J5A?t=2063" },
     "notes": "Tried to Hidden Power (Fire) a Charjabug with Flash Fire, but took an Acrobatics to the face.. One-hit knock out.",
     "side": "right"
   },
@@ -1420,5 +1421,65 @@
     "notes": "Has the ability 'Adaptability'",
     "video": { "url": "https://youtu.be/W7amAOBYFts?t=558" },
     "side": "left"
+  },
+  {
+    "id": "e089",
+    "type": "caught",
+    "episode": 40,
+    "timestamp": "00:07:32",
+    "date": "2025-10-31",
+    "pokemon": {
+      "nickname": "ConnrMcCak",
+      "species": "Tympole",
+      "gender": "F",
+      "level": 46
+    },
+    "location": "Antisis Sewers",
+    "notes": "Has the ability 'Stench'",
+    "video": { "url": "https://youtu.be/BCnZS2EAMNY?t=452" },
+    "side": "left"
+  },
+  {
+    "id": "e090",
+    "type": "caught",
+    "episode": 40,
+    "timestamp": "00:16:58",
+    "date": "2025-10-31",
+    "pokemon": {
+      "nickname": "Demon",
+      "species": "Cutiefly",
+      "gender": "F",
+      "level": 21
+    },
+    "location": "Antisis City",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/BCnZS2EAMNY?t=1018" },
+    "side": "left"
+  },
+  {
+    "id": "e091",
+    "type": "fainted",
+    "episode": 40,
+    "timestamp": "00:30:47",
+    "date": "2025-10-31",
+    "pokemon": {
+        "species": "Kommo-o",
+        "nickname": "Celestial",
+        "level": 52
+    },
+    "location": "Antisis Gym - Ring Challenge",
+    "video": { "url": "https://youtu.be/BCnZS2EAMNY?t=1847" },
+    "notes": "Made a blow to the Sudowoodo, but took a Counter to the face.. One-hit knock out.",
+    "side": "right"
+  },
+  {
+    "id": "e092",
+    "type": "run_end",
+    "episode": 40,
+    "timestamp": "00:33:05",
+    "date": "2025-10-31",
+    "notes": "End of Run! Fainted at the Gym Challenge.",
+    "video": { "url": "https://youtu.be/BCnZS2EAMNY?t=1985" },
+    "side": "right"
   }
 ]
