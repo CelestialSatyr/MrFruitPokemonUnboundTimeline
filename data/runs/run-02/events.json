@@ -1478,8 +1478,28 @@
     "episode": 40,
     "timestamp": "00:33:05",
     "date": "2025-10-31",
-    "notes": "End of Run! Fainted at the Gym Challenge.",
+    "notes": "End of Run! Fainted at the Gym Challenge. ----> REVOKED: We're continuing the journey because of the circumstances of the gym challenge!",
     "video": { "url": "https://youtu.be/BCnZS2EAMNY?t=1985" },
     "side": "right"
+  },
+  {
+    "id": "e093",
+    "type": "badge",
+    "episode": 41,
+    "timestamp": "00:51:14",
+    "date": "2025-11-17",
+    "badge": "Badge_Antisis",
+    "location": "Antisis Gym",
+    "pokemons": [
+    { "species": "Shiinotic", "nickname": "Stratton1"},
+    { "species": "Dugtrio", "nickname": "Dig Bick"},
+    { "species": "Trevenant", "nickname": "Pong Lenis"},
+    { "species": "Arceus", "nickname": "Koiamboo"},
+    { "species": "Mesprit", "nickname": "Gris"},
+    { "species": "Golisopod", "nickname": "Venatusss"}
+  ],
+    "notes": "The Antisis Gym has been conquered! The sixth badge is ours!",
+    "video": { "url": "https://youtu.be/gbOZbovRJPc?t=3074" },
+    "side": "left"
   }
 ]
