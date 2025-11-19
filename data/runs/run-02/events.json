@@ -1501,5 +1501,79 @@
     "notes": "The Antisis Gym has been conquered! The sixth badge is ours!",
     "video": { "url": "https://youtu.be/gbOZbovRJPc?t=3074" },
     "side": "left"
+  },
+  {
+    "id": "e094",
+    "type": "evolved",
+    "episode": 42,
+    "timestamp": "00:02:01",
+    "date": "2025-11-19",
+    "from": "Misdreavus",
+    "to": "Mismagius",
+    "notes": "Misdreavus evolved during off-camera leveling. Their new ability is 'Insomnia'!",
+    "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=121" },
+    "side": "left"
+  },
+  {
+    "id": "e095",
+    "type": "evolved",
+    "episode": 42,
+    "timestamp": "00:03:47",
+    "date": "2025-11-19",
+    "from": "Horsea",
+    "to": "Kingdra",
+    "notes": "Horsea evolved during off-camera leveling. Their new ability is 'Stench'!",
+    "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=227" },
+    "side": "left"
+  },
+  {
+    "id": "e096",
+    "type": "caught",
+    "episode": 42,
+    "timestamp": "00:13:44",
+    "date": "2025-11-19",
+    "pokemon": {
+      "nickname": "Xx_Bingo",
+      "species": "Togedemaru",
+      "gender": "F",
+      "level": 36
+    },
+    "location": "Hidden Grotto - Gurun Town",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=824" },
+    "side": "left"
+  },
+  {
+    "id": "e097",
+    "type": "caught",
+    "episode": 42,
+    "timestamp": "00:25:52",
+    "date": "2025-11-19",
+    "pokemon": {
+      "nickname": "DirtyRandy",
+      "species": "Magnemite",
+      "level": 50
+    },
+    "location": "Route 17",
+    "notes": "Has the ability 'Desolate Land'",
+    "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=1552" },
+    "side": "left"
+  },
+  {
+    "id": "e098",
+    "type": "caught",
+    "episode": 42,
+    "timestamp": "00:27:56",
+    "date": "2025-11-19",
+    "pokemon": {
+      "nickname": "Blindviper",
+      "species": "Gumshoos",
+      "gender": "M",
+      "level": 22
+    },
+    "location": "Route 16 (Token Encounter from Antisis City Gym)",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=1676" },
+    "side": "left"
   }
 ]
