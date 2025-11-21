@@ -1575,5 +1575,56 @@
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/LzJH8yJYDJQ?t=1676" },
     "side": "left"
+  },
+  {
+    "id": "e099",
+    "type": "caught",
+    "episode": 43,
+    "timestamp": "00:04:08",
+    "date": "2025-11-21",
+    "pokemon": {
+      "nickname": "NuclearNova",
+      "species": "Petilil",
+      "gender": "F",
+      "level": 36
+    },
+    "location": "Route 17 - Hidden Grotto",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/IIiKO5yIrpA?t=248" },
+    "side": "left"
+  },
+  {
+    "id": "e100",
+    "type": "caught",
+    "episode": 43,
+    "timestamp": "00:42:56",
+    "date": "2025-11-21",
+    "pokemon": {
+      "nickname": "Reign31415",
+      "species": "Claydol",
+      "gender": "F",
+      "level": 45
+    },
+    "location": "Seaport City - Gift Pokemon",
+    "notes": "Has the ability 'Telepathy'",
+    "video": { "url": "https://youtu.be/IIiKO5yIrpA?t=2576" },
+    "side": "left"
+  },
+  {
+    "id": "e101",
+    "type": "caught",
+    "episode": 43,
+    "timestamp": "00:56:34",
+    "date": "2025-11-21",
+    "pokemon": {
+      "nickname": "Embrosia",
+      "species": "Dusknoir",
+      "gender": "F",
+      "level": 24
+    },
+    "location": "Seaport City",
+    "notes": "Has the ability 'Leaf Guard'",
+    "video": { "url": "https://youtu.be/IIiKO5yIrpA?t=3394" },
+    "side": "left"
   }
 ]
