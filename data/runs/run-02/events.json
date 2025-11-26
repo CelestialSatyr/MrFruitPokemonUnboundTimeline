@@ -1626,5 +1626,56 @@
     "notes": "Has the ability 'Leaf Guard'",
     "video": { "url": "https://youtu.be/IIiKO5yIrpA?t=3394" },
     "side": "left"
+  },
+  {
+    "id": "e102",
+    "type": "caught",
+    "episode": 44,
+    "timestamp": "00:08:50",
+    "date": "2025-11-26",
+    "pokemon": {
+      "nickname": "Iamgreymar",
+      "species": "Marowak",
+      "gender": "F",
+      "level": 48
+    },
+    "location": "Polder Town",
+    "notes": "Has the ability 'Dark Aura'",
+    "video": { "url": "https://youtu.be/Q0KY4GyzLw0?t=530" },
+    "side": "left"
+  },
+  {
+    "id": "e103",
+    "type": "caught",
+    "episode": 44,
+    "timestamp": "00:18:25",
+    "date": "2025-11-26",
+    "pokemon": {
+      "nickname": "Retvik0169",
+      "species": "Lillipup",
+      "gender": "M",
+      "level": 47
+    },
+    "location": "Safari Zone",
+    "notes": "Has the ability 'Aroma Veil'",
+    "video": { "url": "https://youtu.be/Q0KY4GyzLw0?t=1105" },
+    "side": "left"
+  },
+  {
+    "id": "e104",
+    "type": "caught",
+    "episode": 44,
+    "timestamp": "00:23:59",
+    "date": "2025-11-26",
+    "pokemon": {
+      "nickname": "Entropi 29",
+      "species": "Gigalith",
+      "gender": "F",
+      "level": 49
+    },
+    "location": "Cootes Bog",
+    "notes": "Has the ability 'Power Spot'",
+    "video": { "url": "https://youtu.be/Q0KY4GyzLw0?t=1439" },
+    "side": "left"
   }
 ]
