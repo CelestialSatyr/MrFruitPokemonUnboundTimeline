@@ -1677,5 +1677,25 @@
     "notes": "Has the ability 'Power Spot'",
     "video": { "url": "https://youtu.be/Q0KY4GyzLw0?t=1439" },
     "side": "left"
+  },
+  {
+    "id": "e105",
+    "type": "caught",
+    "episode": 45,
+    "timestamp": "00:44:05",
+    "date": "2025-11-28",
+    "pokemon": {
+      "nickname": "Braidengil",
+      "species": "Silcoon",
+      "gender": "F",
+      "level": 1
+    },
+    "location": "Epidimy Town - Gift Pokemon",
+    "notes": "The shiny egg! Has the ability '???'",
+    "special": {
+    "label": "Shiny!"
+    },
+    "video": { "url": "https://youtu.be/rtPl4BrwG0Y?t=2645" },
+    "side": "left"
   }
 ]
