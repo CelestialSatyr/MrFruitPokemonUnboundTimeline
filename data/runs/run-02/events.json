@@ -1697,5 +1697,93 @@
     },
     "video": { "url": "https://youtu.be/rtPl4BrwG0Y?t=2645" },
     "side": "left"
+  },
+  {
+    "id": "e106",
+    "type": "badge",
+    "episode": 46,
+    "timestamp": "00:20:37",
+    "date": "2025-12-05",
+    "badge": "Badge_Polder",
+    "location": "Polder Town Gym",
+    "pokemons": [
+    { "species": "Mismagius", "nickname": "Charizard"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Muk", "nickname": "mikealtur"},
+    { "species": "Arceus", "nickname": "Koiamboo"},
+    { "species": "Shaymin", "nickname": "J'Zargo"},
+    { "species": "Kingdra", "nickname": "RebelTeddy"}
+  ],
+    "notes": "The Polder Town Gym has been conquered! The seventh badge is ours!",
+    "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1237" },
+    "side": "left"
+  },
+  {
+    "id": "e107",
+    "type": "caught",
+    "episode": 46,
+    "timestamp": "00:26:41",
+    "date": "2025-12-05",
+    "pokemon": {
+      "nickname": "Blackoutff",
+      "species": "Watchog",
+      "gender": "M",
+      "level": "???"
+    },
+    "location": "Safari Zone - Hard Mode Encounter",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1600" },
+    "side": "left"
+  },
+  {
+    "id": "e108",
+    "type": "caught",
+    "episode": 46,
+    "timestamp": "00:28:53",
+    "date": "2025-12-05",
+    "pokemon": {
+      "nickname": "Starsoul",
+      "species": "Froslass",
+      "gender": "F",
+      "level": "???"
+    },
+    "location": "Safari Zone - Insane Mode Encounter",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1733" },
+    "side": "left"
+  },
+  {
+    "id": "e109",
+    "type": "caught",
+    "episode": 46,
+    "timestamp": "01:17:23",
+    "date": "2025-12-05",
+    "pokemon": {
+      "nickname": "Shnoast",
+      "species": "Mudkip",
+      "gender": "M",
+      "level": 51
+    },
+    "location": "Magnolia Fields",
+    "notes": "Has the ability '???'",
+    "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=4643" },
+    "side": "left"
+  },
+  {
+    "id": "e110",
+    "type": "caught",
+    "episode": 46,
+    "timestamp": "01:20:50",
+    "date": "2025-12-05",
+    "pokemon": {
+      "nickname": "Gerardoava",
+      "species": "Cleffa",
+      "gender": "F",
+      "level": 49
+    },
+    "location": "Magnolia Fields - Re-encounter",
+    "notes": "Re-encounter from the Safari Zone (Medium Difficulty), Has the ability '???'",
+    "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=4850" },
+    "side": "left"
   }
 ]
