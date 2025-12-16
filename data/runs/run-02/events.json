@@ -1724,6 +1724,7 @@
     "episode": 46,
     "timestamp": "00:26:41",
     "date": "2025-12-05",
+    "illegal": true,
     "pokemon": {
       "nickname": "Blackoutff",
       "species": "Watchog",
@@ -1731,7 +1732,7 @@
       "level": "???"
     },
     "location": "Safari Zone - Hard Mode Encounter",
-    "notes": "Has the ability '???'",
+    "notes": "ILLEGAL | Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1600" },
     "side": "left"
   },
@@ -1741,13 +1742,14 @@
     "episode": 46,
     "timestamp": "00:28:53",
     "date": "2025-12-05",
+    "illegal": true,
     "pokemon": {
       "nickname": "Starsoul",
       "species": "Froslass",
       "gender": "F",
       "level": "???"
     },
-    "location": "Safari Zone - Insane Mode Encounter",
+    "location": "ILLEGAL | Safari Zone - Insane Mode Encounter",
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1733" },
     "side": "left"
@@ -1765,7 +1767,7 @@
       "level": 51
     },
     "location": "Magnolia Fields",
-    "notes": "Has the ability '???'",
+    "notes": "Has the ability 'Dancer'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=4643" },
     "side": "left"
   },
@@ -1775,6 +1777,7 @@
     "episode": 46,
     "timestamp": "01:20:50",
     "date": "2025-12-05",
+    "illegal": true,
     "pokemon": {
       "nickname": "Gerardoava",
       "species": "Cleffa",
@@ -1782,8 +1785,61 @@
       "level": 49
     },
     "location": "Magnolia Fields - Re-encounter",
-    "notes": "Re-encounter from the Safari Zone (Medium Difficulty), Has the ability '???'",
+    "notes": "ILLEGAL | Re-encounter from the Safari Zone (Medium Difficulty), Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=4850" },
+    "side": "left"
+  },
+  {
+    "id": "e111",
+    "type": "caught",
+    "episode": 47,
+    "timestamp": "01:32:46",
+    "date": "2025-12-12",
+    "pokemon": {
+      "nickname": "Blackoutff",
+      "species": "Wailord",
+      "gender": "F",
+      "level": 50
+    },
+    "location": "Magnolia Fields - Static Encounter",
+    "notes": "Named after Blackoutff due to the illegal capture in the Safari Zone, Has the ability '???'",
+    "video": { "url": "https://youtu.be/ltulBfM2zW8?t=5566" },
+    "side": "left"
+  },
+  {
+    "id": "e112",
+    "type": "fainted",
+    "episode": 47,
+    "timestamp": "02:12:40",
+    "date": "2025-12-12",
+    "pokemon": {
+        "species": "Muk",
+        "nickname": "mikealtur",
+        "level":61
+    },
+    "location": "Redwood Village Gym",
+    "video": { "url": "https://youtu.be/ltulBfM2zW8?t=7960" },
+    "notes": "Died to Bellsprout's Poison Jab; a valiant effort, Mike; respect!",
+    "side": "right"
+  },
+  {
+    "id": "e113",
+    "type": "badge",
+    "episode": 47,
+    "timestamp": "02:14:34",
+    "date": "2025-12-12",
+    "badge": "Badge_Redwood",
+    "location": "Redwood Village Gym",
+    "pokemons": [
+    { "species": "Mismagius", "nickname": "Charizard"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Muk", "nickname": "mikealtur"},
+    { "species": "Arceus", "nickname": "Koiamboo"},
+    { "species": "Shaymin", "nickname": "J'Zargo"},
+    { "species": "Kingdra", "nickname": "RebelTeddy"}
+  ],
+    "notes": "Time badge obtained, all badges have been claimed now! But not without losses, RIP Mike.",
+    "video": { "url": "https://youtu.be/ltulBfM2zW8?t=8074" },
     "side": "left"
   }
 ]
