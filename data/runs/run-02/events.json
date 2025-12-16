@@ -1734,7 +1734,7 @@
     "location": "Safari Zone - Hard Mode Encounter",
     "notes": "ILLEGAL | Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1600" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e108",
@@ -1752,7 +1752,7 @@
     "location": "ILLEGAL | Safari Zone - Insane Mode Encounter",
     "notes": "Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=1733" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e109",
@@ -1787,7 +1787,7 @@
     "location": "Magnolia Fields - Re-encounter",
     "notes": "ILLEGAL | Re-encounter from the Safari Zone (Medium Difficulty), Has the ability '???'",
     "video": { "url": "https://youtu.be/2tFpu16FnzQ?t=4850" },
-    "side": "left"
+    "side": "right"
   },
   {
     "id": "e111",
