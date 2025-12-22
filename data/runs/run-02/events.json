@@ -1841,5 +1841,115 @@
     "notes": "Time badge obtained, all badges have been claimed now! But not without losses, RIP Mike.",
     "video": { "url": "https://youtu.be/ltulBfM2zW8?t=8074" },
     "side": "left"
+  },
+  {
+    "id": "e114",
+    "type": "evolved",
+    "episode": 48,
+    "timestamp": "00:00:01",
+    "date": "2025-12-19",
+    "from": "Magnemite",
+    "to": "Magnezone",
+    "notes": "DirtyRandy evolved during off-camera leveling. Their new ability is 'Speed Boost'!",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=1" },
+    "side": "left"
+  },
+  {
+    "id": "e115",
+    "type": "fainted",
+    "episode": 48,
+    "timestamp": "01:03:05",
+    "date": "2025-12-19",
+    "pokemon": {
+        "species": "Trevenant",
+        "nickname": "Pong Lenis",
+        "level":66
+    },
+    "location": "Route 18",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=3785" },
+    "notes": "Died to a Dugtrio's Fissure, an icon falls.",
+    "side": "right"
+  },
+  {
+    "id": "e116",
+    "type": "fainted",
+    "episode": 48,
+    "timestamp": "01:05:54",
+    "date": "2025-12-19",
+    "pokemon": {
+        "species": "Florges",
+        "nickname": "Freyja",
+        "level":66
+    },
+    "location": "Route 18",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=3954" },
+    "notes": "Died to the same Dugtrio's Fissure, what an absolute disaster!",
+    "side": "right"
+  },
+  {
+    "id": "e117",
+    "type": "caught",
+    "episode": 48,
+    "timestamp": "01:23:00",
+    "date": "2025-12-19",
+    "pokemon": {
+      "nickname": "Smattathnu",
+      "species": "Arcanine",
+      "gender": "M",
+      "level": 57
+    },
+    "location": "Route 18 - Hidden Grotto",
+    "notes": "A good catch after the catastrophy in the same route, Has the ability 'Water Absorb'",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=4980" },
+    "side": "left"
+  },
+  {
+    "id": "e118",
+    "type": "caught",
+    "episode": 48,
+    "timestamp": "01:56:19",
+    "date": "2025-12-19",
+    "pokemon": {
+      "nickname": "Guyhood69",
+      "species": "Mightyena",
+      "gender": "M",
+      "level": 58
+    },
+    "location": "Victory Road",
+    "notes": "Should've technically been a Patrat due to the previous Patrat being an illegal encounter, Has the ability '???'",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=6979" },
+    "side": "left"
+  },
+  {
+    "id": "e119",
+    "type": "fainted",
+    "episode": 48,
+    "timestamp": "02:10:06",
+    "date": "2025-12-19",
+    "pokemon": {
+        "species": "Slowbro",
+        "nickname": "AgentArnie",
+        "level":66
+    },
+    "location": "Victory Road",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=7806" },
+    "notes": "Died to a Gliscor's Guillotine, what is going on this episode?!",
+    "side": "right"
+  },
+  {
+    "id": "e120",
+    "type": "fainted",
+    "episode": 48,
+    "timestamp": "02:26:11",
+    "date": "2025-12-19",
+    "pokemon": {
+        "species": "Magnezone",
+        "nickname": "DirtyRandy",
+        "level":66
+    },
+    "location": "Victory Road",
+    "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=8771" },
+    "notes": "DirtyRandy has fallen as quickkly as they rose, unfortunately to friendly fire from Dusky's Earthquake, o7.",
+    "side": "right"
   }
 ]
