@@ -1951,5 +1951,66 @@
     "video": { "url": "https://youtu.be/FDnsgsDTdW4?t=8771" },
     "notes": "DirtyRandy has fallen as quickkly as they rose, unfortunately to friendly fire from Dusky's Earthquake, o7.",
     "side": "right"
+  },
+  {
+    "id": "e0121",
+    "type": "no_event",
+    "episode": 49,
+    "date": "2026-01-02",
+    "video": { "url": "https://youtu.be/NYvoV6YMQlU?t=648" },
+    "timestamp": "00:10:48",
+    "message": "Dream Mist - Change Ability!",
+    "note": "The ability of Dusky got changed to their hidden ability! They new ability is 'Sap Sipper'."
+  },
+  {
+    "id": "e122",
+    "type": "fainted",
+    "episode": 49,
+    "timestamp": "00:27:10",
+    "date": "2026-01-02",
+    "pokemon": {
+        "species": "Groudon",
+        "nickname": "Dusky",
+        "level":75
+    },
+    "location": "Elite 4 - Moleman",
+    "video": { "url": "https://youtu.be/NYvoV6YMQlU?t=1630" },
+    "notes": "Unfortunately Dusky got caught by a surprise 'Innards Out', with Araquanid chipping in for the last little bit.",
+    "side": "right"
+  },
+  {
+    "id": "e123",
+    "type": "fainted",
+    "episode": 49,
+    "timestamp": "00:54:34",
+    "date": "2026-01-02",
+    "pokemon": {
+        "species": "Lapras",
+        "nickname": "Dreamc4str",
+        "level":75
+    },
+    "location": "Elite 4 - Arabella",
+    "video": { "url": "https://youtu.be/NYvoV6YMQlU?t=3274" },
+    "notes": "Unfortunately, Dreamc4ster died to Kartana's Leaf Blade, one-hit KO.",
+    "side": "right"
+  },
+  {
+    "id": "e124",
+    "type": "badge",
+    "episode": 49,
+    "timestamp": "01:11:18",
+    "date": "2025-12-12",
+    "location": "Elite 4 - Hall of Fame",
+    "pokemons": [
+    { "species": "Arcanine", "nickname": "Smattathnu"},
+    { "species": "Groudon", "nickname": "Dusky"},
+    { "species": "Cresselia", "nickname": "Sleep"},
+    { "species": "Arceus", "nickname": "Koiamboo"},
+    { "species": "Dhelmise", "nickname": "NickMash14"},
+    { "species": "Lapras", "nickname": "Dreamc4str"}
+  ],
+    "notes": "The Elite 4 - Hall of Fame! It's been completed, two losses, but the run has been completed!",
+    "video": { "url": "https://youtu.be/NYvoV6YMQlU?t=4278" },
+    "side": "left"
   }
 ]
